@@ -1,0 +1,130 @@
+---
+title: "MAE0217 - Estatística Descritiva - Lista 1"
+author: |
+  | Natalia Koza\thanks{Número USP: 10698432}
+  | Rafael Gonçalves Pereira da Silva\thanks{Número USP: 9009600}
+  | Ricardo Geraldes Tolesano\thanks{Número USP: 10734557}
+  | Rubens Kushimizo Rodrigues Xavier\thanks{Número USP: 8626718}
+  | Rubens Gomes Neto\thanks{Número USP: 9318484}
+  | Rubens Santos Andrade Filho\thanks{Número USP: 10370336}
+  | Thamires dos Santos Matos\thanks{Número USP: 9402940}
+date: "`r stringr::str_to_sentence(format(Sys.time(), '%B de %Y'))`"
+lang: pt-BR
+header-includes:
+  # - \usepackage[brazilian]{babel}
+  - \usepackage{float}
+  - \usepackage{amsmath}
+  - \usepackage{amsthm}
+  - \floatplacement{figure}{H}
+  - \usepackage{indentfirst}
+  - \setlength{\parindent}{4em}
+  - \setlength{\parskip}{1em}
+  - \usepackage{booktabs}
+  - \usepackage{dcolumn}
+  - \usepackage{bm}
+  - \usepackage{titling}
+  - \thanksmarkseries{arabic} % \thanks footnotes com numeros
+  - \usepackage[bottom]{footmisc} % corrige posição footnotes
+  - \usepackage{pdfpages}
+  - \usepackage{tocloft}
+  - \renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+  - \usepackage{amssymb}
+  - \renewcommand\qedsymbol{$\blacksquare$}
+  - \usepackage{pdfpages}
+  - \usepackage{cleveref}
+output: 
+  pdf_document:
+    fig_caption: yes
+    number_sections: no
+    toc: true
+    toc_depth: 2
+editor_options: 
+  chunk_output_type: console
+---
+
+<!-- mudar o current working directory para a pasta do projeto: -->
+<!--  Seta para baixo ao lado de "Knit" -> Knit directory -> Selecionar "Project Directory" -->
+
+\pagebreak
+
+```{r setup, include=FALSE}
+library(dplyr)
+library(knitr)
+
+source('src/helpers.R')
+```
+
+
+# Exercício 1
+
+# Exercício 2
+
+A tabela é derivada de um estudo cujo o objetivo era comparar resultados da Avaliação de Diagnóstico do estudo com os  resultados  da  macro-avaliação  Prova  São  Paulo  e  verificar  a  possível  influência  de variáveis  socioeconômicas  no  aprendizado  de  Matemática  dos alunos  da  quarta  série do Ensino Fundamental da rede de ensino do município de São Paulo. Pelo fato dos alunos estarem agrupados em escolas construiu-se  um  modelo  de  regressão  que  considerou  o agrupamento dos alunos  por   subprefeitura que considera  a relação  linear  da  nota  da  Avaliação  Diagnóstico  com  a  nota  da  Prova  São  Paulo  e  a idade do aluno, e as variações entre subprefeituras.
+
+A tabela visa comparar as notas médias da Avaliação Diagnóstico com os da Prova São Paulo, tal que tais valores fossem padronizados no intervalo [0,1]. Para facilitar a leitura, é interessante que seja simplificada e ordenada pelas notas da Avaliação Diagnóstico, além de ter os valores truncados para 2 casas decimais, precisão suficiente já que os resultados são semelhantes e que facilitam a visualização.
+
+INCLUIR TABELA
+
+# Exercício 4
+
+Num estudo planejado para avaliar o consumo médio de combustível de veículos em diferentes velocidades foram utilizados 4 automóveis da marca A e 3 automóveis da marca B selecionados ao acaso das respectivas linhas de produção. 
+
+O consumo (em L/km) de cada um dos 7 automóveis foi observado em 3 velocidades diferentes (40 km/h, 80 km/h e 110 km/h). Delineie uma planilha apropriada para a coleta e análise estatística dos dados, rotulando-a adequadamente.
+
+INLCUIR TABELA
+
+
+# Exercício 5
+
+# Exercício 7
+
+
+# Exercício 8
+
+## a)
+Importamos o arquivo `cidades.xls` e usamos o comando `str` para olhar a estrutura dos dados:
+```{r}
+dados <- readxl::read_xls('data/cidades.xls')
+str(dados)
+```
+
+Observamos que muitas colunas numéricas foram lidas como do tipo caractere, mesmo a função tendo identificado corretamente que o arquivo usa virgula commo separador decimal.
+
+Apenas as colunas `MUNIC` e `UF` são de caracteres, as outras deveriam ser do tipo numéricas.
+ Após analisar os dados, descobrimos que os dados faltantes estão codificados com um traço "-". Dessa forma, vamos ler novamnete o arquivo e dizer ao R para tratar os traços como dados faltantes.
+```{r}
+dados <- readxl::read_xls('data/cidades.xls', na='-')
+str(dados)
+```
+
+Com isso os tipos de dados estão agora corretos.
+
+
+## b)
+
+A seguir, apresentamos um resumo das variáveis dos dados como o comando `summary`:
+```{r}
+summary(dados)
+```
+
+
+## c)
+
+Observando o resumo do item anterior, notamos que as variáveis `MUNIC` e `UF` são alfanuméricas enquanto que as demais são numéricas.
+A seguir indicamos o número de observações omissas em cada variável:
+```{r, echo=FALSE}
+data.frame(
+  "Tipo" = ifelse(sapply(dados, class)=="numeric", "Numérica", "Alfanumérica" ),
+  `Obs. Omissas` = colSums(is.na(dados)),
+  check.names = FALSE
+  ) %>%
+  as_tibble(rownames = "Variável") %>% 
+  kable(caption='Classificação e Observações Omissas')
+```
+
+
+
+
+
+
+
