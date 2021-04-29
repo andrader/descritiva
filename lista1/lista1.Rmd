@@ -48,6 +48,8 @@ editor_options:
 \pagebreak
 
 ```{r setup, include=FALSE}
+options(width = 60)
+
 library(dplyr)
 library(knitr)
 
@@ -103,7 +105,7 @@ tibble(
 Importamos o arquivo `cidades.xls` e usamos o comando `str` para olhar a estrutura dos dados:
 ```{r}
 dados <- readxl::read_xls('data/cidades.xls')
-str(dados)
+str(dados, strict.width="wrap", width=80)
 ```
 
 Observamos que muitas colunas numéricas foram lidas como do tipo caractere, mesmo a função tendo identificado corretamente que o arquivo usa virgula commo separador decimal.
@@ -112,7 +114,7 @@ Apenas as colunas `MUNIC` e `UF` são de caracteres, as outras deveriam ser do t
  Após analisar os dados, descobrimos que os dados faltantes estão codificados com um traço "-". Dessa forma, vamos ler novamnete o arquivo e dizer ao R para tratar os traços como dados faltantes.
 ```{r}
 dados <- readxl::read_xls('data/cidades.xls', na='-')
-str(dados)
+str(dados, strict.width="wrap", width=80)
 ```
 
 Com isso os tipos de dados estão agora corretos.
