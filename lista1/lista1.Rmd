@@ -127,8 +127,8 @@ id;Identificador único do paciente;Número inteiro
 ocasiao;Ocasião da avaliação;0: Limiar
 ocasiao;Ocasião da avaliação;1: Teste 1
 ocasiao;Ocasião da avaliação;2: Teste 2
-od;Avaliação da Orelha Direita;Porcentagem
-oe;Avaliação da Orelha Esquerda;Porcentagem
+od;Avaliação da Orelha Direita;Percentual
+oe;Avaliação da Orelha Esquerda;Percentual
 
 "
 dados <- read.table(text = txt, sep=";",dec=",", header = TRUE, check.names = FALSE)
