@@ -69,9 +69,27 @@ INCLUIR TABELA
 
 Num estudo planejado para avaliar o consumo médio de combustível de veículos em diferentes velocidades foram utilizados 4 automóveis da marca A e 3 automóveis da marca B selecionados ao acaso das respectivas linhas de produção. 
 
-O consumo (em L/km) de cada um dos 7 automóveis foi observado em 3 velocidades diferentes (40 km/h, 80 km/h e 110 km/h). Delineie uma planilha apropriada para a coleta e análise estatística dos dados, rotulando-a adequadamente.
+O consumo (em L/km) de cada um dos 7 automóveis foi observado em 3 velocidades diferentes (40 km/h, 80 km/h e 110 km/h). 
+Delineamos uma planilha apropriada para a coleta e análise estatística dos dados e rotulamos-a adequadamente. A planilha encontra-se no formato longo, isto é, medidas de uma mesma variável encontram-se em uma única coluna.
 
-INLCUIR TABELA
+```{r, echo=FALSE}
+set.seed(42)
+
+tibble(
+  automovel_id = c(1:7),
+  marca = c(rep("A",4),rep("B",3)),
+  "40" = rep("",7),#rnorm(7, 12, 5),
+  "80" = rep("",7),#rnorm(7, 14, 5),
+  "110" = rep("",7)#rnorm(7, 16, 5)
+) %>% 
+  tidyr::pivot_longer(
+    3:last_col(), 
+    names_to = "velocidade", 
+    values_to = "consumo"
+    ) %>% 
+  kable(digits = 1, caption = "Delineamento da Planilha para Coleta")
+```
+
 
 
 # Exercício 5
