@@ -50,7 +50,7 @@ editor_options:
 ```{r setup, include=FALSE}
 options(width = 60)
 
-library(dplyr)
+library(tidyverse)
 library(knitr)
 
 source('src/helpers.R')
@@ -58,6 +58,71 @@ source('src/helpers.R')
 
 
 # Exercício 1
+
+## a)
+Para a construção da planilha, primeiro notamos alguns problemas: os dados faltantes estavam codificados como `"ZERO"`, um dado com a letra "O" no lugar de 0, campos numéricos com sufixo "MG", um dado com ",." como separador decimal.
+Após corrigir todos esses problemas, deixamos os dados no formato longo.
+```{r, echo=FALSE}
+dados <- readxl::read_xls("data/morfina2.xls", na="ZERO") %>% 
+  extract(col=CABELOS,into = c("name","paciente"), 
+          regex = "(MORFINA)?(.*)", 
+          remove = TRUE) %>% 
+  
+  mutate(
+    name = ifelse(name=='MORFINA', 'morfina','cabelo'),
+    paciente = ifelse(paciente=='', NA,paciente)
+  ) %>% 
+  fill(paciente) %>% 
+  
+  tidyr::pivot_longer(
+    cols = T0:T60, names_to = 'tempo', 
+    values_to = 'valor', names_prefix = "T") %>% 
+  
+  mutate(
+    tempo = as.numeric(tempo),
+    valor = valor %>% 
+      gsub("MG", "", .) %>% 
+      gsub("[,|.]+", ".",.) %>% 
+      gsub("O", "0",.) %>% 
+      as.numeric()
+    
+  ) %>% 
+  
+  tidyr::pivot_wider(
+    id_cols = c(paciente, tempo),
+    names_from = name, 
+    values_from = valor)
+
+dados %>% 
+  head(10) %>% 
+  kable(caption = "Primeiras 10 linhas dos dados corrigidos e no formato longo.")
+
+
+```
+
+E, a seguir, construimos o dicinário desses dados:
+```{r, echo=FALSE}
+txt="Rótulos;Variável;Unidade de medida
+paciente;Identificador único do paciente;Código alfanumérico
+tempo;Tempo desde o início;0: 0 dias
+tempo;Tempo desde o início;30: 30 dias
+tempo;Tempo desde o início;60: 60 dias
+cabelo;quantidade de morfina nos cabelos;ng
+morfina;dose de morfina administrada;mg
+"
+dados <- read.table(text = txt, sep=";",dec=",", header = TRUE, check.names = FALSE)
+
+dados %>% kable(caption = "Dicionário dos dados.") %>% 
+  kableExtra::collapse_rows(columns = 1:2, valign = "top")
+```
+
+## b)
+
+```{r, echo=FALSE}
+#sexo, raça, grau de instrução e tipo de lesão 
+
+```
+
 
 # Exercício 2
 
