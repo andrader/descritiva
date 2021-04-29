@@ -65,7 +65,29 @@ A tabela é derivada de um estudo cujo o objetivo era comparar resultados da Ava
 
 A tabela visa comparar as notas médias da Avaliação Diagnóstico com os da Prova São Paulo, tal que tais valores fossem padronizados no intervalo [0,1]. Para facilitar a leitura, é interessante que seja simplificada e ordenada pelas notas da Avaliação Diagnóstico, além de ter os valores truncados para 2 casas decimais, precisão suficiente já que os resultados são semelhantes e que facilitam a visualização.
 
-INCLUIR TABELA
+```{r, echo = FALSE}
+txt = "Subprefeitura;Nota Avaliação;Nota Modelo Ajustado;Nota na Prova São Paulo
+V.Prudente/ Sapopemba;0,65;0,62;0,41
+São Miguel;0,6;0,58;0,4
+Socorro;0,6;0,52;0,36
+Aricanduva;0,59;0,59;0,4
+Freguesia/Brasilândia;0,59;0,54;0,37
+Ipiranga;0,59;0,54;0,37
+Itaim Paulista;0,57;0,56;0,37
+M’Boi Mirim;0,57;0,55;0,37
+Campo Limpo;0,56;0,53;0,36
+Casa Verde/ Cachoeirinha;0,54;0,55;0,38
+Cidade Tiradentes;0,54;0,54;0,37
+Jabaquara;0,53;0,53;0,36
+São Mateus;0,52;0,51;0,35
+Butantã;0,48;0,47;0,33
+Itaquera;0,4;0,56;0,38"
+
+dados <- read.table(text = txt, sep=";",dec=",", header = TRUE, check.names = FALSE)
+
+dados %>% kable(caption = "Tabela comparativa das notas médias da avaliação das subprefeituras no modelo padronizado para a escala [0,1].")
+```
+
 
 # Exercício 4
 
@@ -78,16 +100,14 @@ Delineamos uma planilha apropriada para a coleta e análise estatística dos dad
 set.seed(42)
 
 tibble(
-  automovel_id = c(1:7),
+  automovel = c(1:7),
   marca = c(rep("A",4),rep("B",3)),
   "40" = rep("",7),#rnorm(7, 12, 5),
   "80" = rep("",7),#rnorm(7, 14, 5),
   "110" = rep("",7)#rnorm(7, 16, 5)
 ) %>% 
   tidyr::pivot_longer(
-    3:last_col(), 
-    names_to = "velocidade", 
-    values_to = "consumo"
+    3:last_col(), names_to = "velocidade", values_to = "consumo"
     ) %>% 
   kable(digits = 1, caption = "Delineamento da Planilha para Coleta")
 ```
@@ -97,6 +117,85 @@ tibble(
 # Exercício 5
 
 # Exercício 7
+
+Reformatamos a planilha com dados de um estudo em que o limiar auditivo foi avaliado nas orelhas direita (OD) e esquerda (OE) de 13 pacientes em 3 ocasiões (Limiar, Teste 1 e Teste 2) segundo as recomendações da Seção 2.2 e indicamos claramente a definição das variáveis e os rótulos para as colunas da planilha.
+
+
+```{r, echo=FALSE}
+txt="Rótulos;Variável;Unidade de medida
+id;Identificador único do paciente;Número inteiro
+ocasiao;Ocasião da avaliação;0: Limiar
+ocasiao;Ocasião da avaliação;1: Teste 1
+ocasiao;Ocasião da avaliação;2: Teste 2
+od;Avaliação da Orelha Direita;Porcentagem
+oe;Avaliação da Orelha Esquerda;Porcentagem
+
+"
+dados <- read.table(text = txt, sep=";",dec=",", header = TRUE, check.names = FALSE)
+
+dados %>% kable(caption = "Dicionário dos dados.") %>% 
+  kableExtra::collapse_rows(columns = 1:2, valign = "top")
+
+```
+
+```{r, echo=FALSE}
+txt="id;ocasiao;od (%);oe (%)
+1;0;50;55
+1;1;50;50
+1;2;80;80
+2;0;41;40
+2;1;45;50
+2;2;68;80
+3;0;41.25;41.25
+3;1;45;45
+3;2;64;72
+4;0;45;43.75
+4;1;60;50
+4;2;76;88
+5;0;51.25;47.5
+5;1;50;50
+5;2;80;88
+6;0;45;52.5
+6;1;50;50
+6;2;84;96
+7;0;52.5;50
+7;1;55;45
+7;2;40;28
+8;0;42.15;48.75
+8;1;40;50
+8;2;80;76
+9;0;50;48.75
+9;1;50;50
+9;2;72;80
+10;0;47.5;46.25
+10;1;50;50
+10;2;84;84
+11;0;55;56.25
+11;1;55;60
+11;2;80;84
+12;0;46.25;46.25
+12;1;40;35
+12;2;72;84
+13;0;50;47.5
+13;1;45;45
+13;2;76;76
+"
+read.table(text = txt, sep=";",dec=".", 
+           header = TRUE, check.names = FALSE) %>% 
+  select(id,ocasiao,`oe (%)`,`od (%)`) %>% 
+  kable(caption = "Dados de um estudo em que o limiar auditivo foi avaliado nas orelhas direita (OD) e esquerda (OE) de 13 pacientes em 3 ocasiões (Limiar, Teste 1 e Teste 2).")
+
+# cat(c(
+#   "\\begin{table}[h] \\centering ", 
+#   kable(dados[rows,],digits = 1),
+#   "\\hspace{1cm} \\centering ",
+#   kable(dados[-rows,],digits = 1),
+#   "\\caption{Dados de um estudo em que o limiar auditivo foi avaliado nas orelhas direita (OD) e esquerda (OE) de 13 pacientes em 3 ocasiões (Limiar, Teste 1 e Teste 2).} \\end{table}"
+# ))  
+
+
+```
+
 
 
 # Exercício 8
