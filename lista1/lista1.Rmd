@@ -16,7 +16,7 @@ header-includes:
   - \usepackage{amsmath}
   - \usepackage{amsthm}
   - \floatplacement{figure}{H}
-  #- \usepackage{indentfirst}
+  - \usepackage{indentfirst}
   - \setlength{\parindent}{4em}
   - \setlength{\parskip}{1em}
   - \usepackage{booktabs}
@@ -112,7 +112,9 @@ tempo;Tempo desde o início;60: 60 dias
 "
 dados <- read.table(text = txt, sep=";",dec=",", header = TRUE, check.names = FALSE)
 
-dados %>% kable(caption = "Dicionário dos dados.") %>% 
+dados %>% 
+  arrange(`Rótulos`) %>% 
+  kable(caption = "Dicionário dos dados.") %>% 
   kableExtra::collapse_rows(columns = 1:2, valign = "top")
 ```
 
@@ -244,7 +246,8 @@ Obito; data do obito;dt
 "
 
 dados <- read.table(text = txt, sep=";",dec=",", header = TRUE, check.names = FALSE) %>%
-  mutate(`Rótulos` = tolower(`Rótulos`))
+  mutate(`Rótulos` = tolower(`Rótulos`)) %>% 
+  arrange(`Rótulos`)
 
 dados %>% kable(caption = "Dicionário dos dados da planilha esforco editada.") %>% 
   kableExtra::collapse_rows(columns = 1:2, valign = "top")
@@ -264,8 +267,8 @@ Na tabela abaixo, podemos observar algumas características do arquivo importado
 dropped <- esforco %>% na.omit();
 values <- c(
   nrow(esforco),
-  sum(dropped$Obito == "Nao"),
-  sum(dropped$Obito != "Nao"),
+  sum(dropped$obito == "Nao"),
+  sum(dropped$obito != "Nao"),
   sum(is.na(esforco))
 );
 names <- c(
@@ -299,7 +302,9 @@ oe;Avaliação da Orelha Esquerda;Percentual
 "
 dados <- read.table(text = txt, sep=";",dec=",", header = TRUE, check.names = FALSE)
 
-dados %>% kable(caption = "Dicionário dos dados.") %>% 
+dados %>% 
+  arrange(`Rótulos`) %>% 
+  kable(caption = "Dicionário dos dados.") %>% 
   kableExtra::collapse_rows(columns = 1:2, valign = "top")
 
 ```
@@ -368,17 +373,19 @@ read.table(text = txt, sep=";",dec=".",
 
 ## a)
 Importamos o arquivo `cidades.xls` e usamos o comando `str` para olhar a estrutura dos dados:
-```{r}
-dados <- readxl::read_xls('data/cidades.xls')
+```{r, echo=FALSE}
+dados <- readxl::read_xls('data/cidades.xls') %>% 
+  rename_with(.fn=tolower)
 str(dados, strict.width="wrap", width=80)
 ```
 
 Observamos que muitas colunas numéricas foram lidas como do tipo caractere, mesmo a função tendo identificado corretamente que o arquivo usa virgula commo separador decimal.
 
-Apenas as colunas `MUNIC` e `UF` são de caracteres, as outras deveriam ser do tipo numéricas.
+Apenas as colunas `munic` e `uf` são de caracteres, as outras deveriam ser do tipo numéricas.
  Após analisar os dados, descobrimos que os dados faltantes estão codificados com um traço "-". Dessa forma, vamos ler novamnete o arquivo e dizer ao R para tratar os traços como dados faltantes.
-```{r}
-dados <- readxl::read_xls('data/cidades.xls', na='-')
+```{r, echo=FALSE}
+dados <- readxl::read_xls('data/cidades.xls', na='-') %>% 
+  rename_with(.fn=tolower)
 str(dados, strict.width="wrap", width=80)
 ```
 
@@ -395,7 +402,7 @@ summary(dados)
 
 ## c)
 
-Observando o resumo do item anterior, notamos que as variáveis `MUNIC` e `UF` são alfanuméricas enquanto que as demais são numéricas.
+Observando o resumo do item anterior, notamos que as variáveis `munic` e `uf` são alfanuméricas enquanto que as demais são numéricas.
 A seguir indicamos o número de observações omissas em cada variável:
 ```{r, echo=FALSE}
 data.frame(
@@ -403,7 +410,9 @@ data.frame(
   `Obs. Omissas` = colSums(is.na(dados)),
   check.names = FALSE
   ) %>%
-  as_tibble(rownames = "Variável") %>% 
+  rownames_to_column("Variável") %>% 
+  arrange(-`Obs. Omissas`, Variável) %>% 
+  # as_tibble(rownames = ) %>% 
   kable(caption='Classificação e Observações Omissas')
 ```
 
