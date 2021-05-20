@@ -1,0 +1,251 @@
+---
+title: "MAE0217 - Estatística Descritiva - Lista 2"
+author: |
+  | Natalia Koza\thanks{Número USP: 10698432}
+  | Rafael Gonçalves Pereira da Silva\thanks{Número USP: 9009600}
+  | Ricardo Geraldes Tolesano\thanks{Número USP: 10734557}
+  | Rubens Kushimizo Rodrigues Xavier\thanks{Número USP: 8626718}
+  | Rubens Gomes Neto\thanks{Número USP: 9318484}
+  | Rubens Santos Andrade Filho\thanks{Número USP: 10370336}
+  | Thamires dos Santos Matos\thanks{Número USP: 9402940}
+date: "`r stringr::str_to_sentence(format(Sys.time(), '%B de %Y'))`"
+lang: pt-BR
+header-includes:
+  # - \usepackage[brazilian]{babel}
+  - \usepackage{float}
+  - \usepackage{amsmath}
+  - \usepackage{amsthm}
+  - \floatplacement{figure}{H}
+  - \usepackage{indentfirst}
+  - \setlength{\parindent}{4em}
+  - \setlength{\parskip}{1em}
+  - \usepackage{booktabs}
+  - \usepackage{dcolumn}
+  - \usepackage{bm}
+  - \usepackage{titling}
+  - \thanksmarkseries{arabic} % \thanks footnotes com numeros
+  - \usepackage[bottom]{footmisc} % corrige posição footnotes
+  - \usepackage{pdfpages}
+  - \usepackage{tocloft}
+  - \renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+  - \usepackage{amssymb}
+  - \renewcommand\qedsymbol{$\blacksquare$}
+  - \usepackage{pdfpages}
+  - \usepackage{cleveref}
+  - \usepackage{threeparttable}
+output: 
+  # pdf_document:
+  bookdown::pdf_document2:
+    fig_caption: yes
+    number_sections: no
+    toc: true
+    toc_depth: 2
+editor_options: 
+  chunk_output_type: console
+---
+
+<!-- mudar o current working directory para a pasta do projeto: -->
+<!--  Seta para baixo ao lado de "Knit" -> Knit directory -> Selecionar "Project Directory" -->
+
+\pagebreak
+
+```{r setup, include=FALSE}
+options(width = 60)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+library(tidyverse)
+library(knitr)
+source('src/helpers.R')
+```
+
+# Exercício 1
+
+O arquivo `rehabcardio` contém informações sobre um estudo de reabilitação de pacientes cardíacos. Elabore um relatório indicando possíveis inconsistências na matriz de dados e faça uma análise descritiva de todas as variáveis do estudo, construindo distribuições de frequências para as variáveis qualitativas e obtendo medidas resumo para as variáveis qualitativas.
+
+# Exercício 12
+
+
+
+
+# Exercício 14
+Na tabela abaixo estão indicadas as durações de 335 lâmpadas.
+
+| Duração(horas) | Número de Lâmpadas |
+|:--------------:|:------------------:|
+|      0-100     |         82         |
+|     100-200    |         71         |
+|     200-300    |         68         |
+|     300-400    |         56         |
+|     400-500    |         43         |
+|     500-800    |         15         |
+
+a) Esboce o histograma correspondente.
+
+```{r, echo=FALSE}
+
+v  = floor(runif(82, min=0, max=101))
+v1 = floor(runif(71, min=100, max=201))
+v2 = floor(runif(68, min=200, max=301))
+v3 = floor(runif(56, min=300, max=401))
+v4 = floor(runif(43, min=400, max=501))
+v5 = floor(runif(15, min=500, max=801))
+d = c(v,v1,v2,v3,v4,v5)
+brk = c(0,100,200,300,400,500,800)
+hist(d, main = "Duração em horas de 335 lâmpadas", xlab="Horas",breaks = brk,  xlim = c(0,800))
+```
+
+b) Calcule os quantis de ordem p=0,1; 0,3; 0,5; 0,7 e 0,9
+```{r, echo=FALSE, results = FALSE}
+
+sort(d,decreasing = FALSE)
+quantile(d, c(.1, .3, .5, .7, .9)) 
+```
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|l|l|l|l|}
+\hline
+p    & 0.1  & 0.3   & 0.5 & 0.7   & 0.9   \\ \hline
+Q(p) & 54.4 & 131.4 & 220 & 319.8 & 454.8 \\ \hline
+\end{tabular}
+\end{table}
+
+# Exercício 15
+
+Os dados apresentados na Tabela \@ref(tab:table17) referem-se aos instantes nos quais o centro de controle operacional de estradas rodoviárias recebeu chamados solicitando algum tipo de auxílio em duas estradas num determinado dia.
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline Estrada 1 & $12: 07: 00 \mathrm{AM}$ & $12: 58: 00 \mathrm{AM}$ & $01: 24: 00 \mathrm{AM}$ & $01: 35: 00 \mathrm{AM}$ & $02: 05: 00 \mathrm{AM}$ \\
+\hline & $03: 14: 00 \mathrm{AM}$ & $03: 25: 00 \mathrm{AM}$ & $03: 46: 00 \mathrm{AM}$ & $05: 44: 00 \mathrm{AM}$ & $05: 56: 00 \mathrm{AM}$ \\
+\hline & $06: 36: 00 \mathrm{AM}$ & $07: 26: 00 \mathrm{AM}$ & $07: 48: 00 \mathrm{AM}$ & $09: 13: 00 \mathrm{AM}$ & $12: 05: 00 \mathrm{PM}$ \\
+\hline & $12: 48: 00 \mathrm{PM}$ & $01: 21: 00 \mathrm{PM}$ & $02: 22: 00 \mathrm{PM}$ & $05: 30: 00 \mathrm{PM}$ & $06: 00: 00 \mathrm{PM}$ \\
+\hline & $07: 53: 00 \mathrm{PM}$ & $09: 15: 00 \mathrm{PM}$ & $09: 49: 00 \mathrm{PM}$ & $09: 59: 00 \mathrm{PM}$ & $10: 53: 00 \mathrm{PM}$ \\
+\hline & $11: 27: 00 \mathrm{PM}$ & $11: 49: 00 \mathrm{PM}$ & $11: 57: 00 \mathrm{PM}$ & & \\
+\hline Estrada 2 & $12: 03: 00 \mathrm{AM}$ & $01: 18: 00 \mathrm{AM}$ & $04: 35: 00 \mathrm{AM}$ & $06: 13: 00 \mathrm{AM}$ & $06: 59: 00 \mathrm{AM}$ \\
+\hline & $08: 03: 00 \mathrm{AM}$ & $10: 07: 00 \mathrm{AM}$ & $12: 24: 00 \mathrm{PM}$ & $01: 45: 00 \mathrm{PM}$ & $02: 07: 00 \mathrm{PM}$ \\
+\hline & $03: 23: 00 \mathrm{PM}$ & $06: 34: 00 \mathrm{PM}$ & $07: 19: 00 \mathrm{PM}$ & $09: 44: 00 \mathrm{PM}$ & $10: 27: 00 \mathrm{PM}$ \\
+\hline & $10: 52: 00 \mathrm{PM}$ & $11: 19: 00 \mathrm{PM}$ & $11: 29: 00 \mathrm{PM}$ & $11: 44: 00 \mathrm{PM}$ & \\
+\hline
+\end{tabular}
+\caption{Planilha com instantes de realização de chamados solicitando auxílio em estradas.}
+\label{tab:table17}
+\end{table}
+
+a) Construa um histograma para a distribuição de frequências dos instantes de chamados em cada uma das estradas.
+
+b) Calcule os intervalos de tempo entre as sucessivas chamadas e descreva-os, para cada uma das estradas, utilizando medidas resumo e gráficos do tipo boxplot. Existe alguma relação entre o tipo de estrada e o intervalo de tempo entre as chamadas?
+
+c) Por intermédio de um gráfico do tipo QQ, verifique se a distribuicão da variável "Intervalo de tempo entre as chamadas" em cada estrada é compatível com um modelo normal. Faça o mesmo para um modelo exponencial. Compare as distribuições de frequências correspondentes às duas estradas.
+
+# Exercício 17
+
+
+Considere o seguinte resumo descritivo da pulsação de estudantes com atividade física intensa e fraca:
+\begin{table}[H]
+\begin{tabular}{ccccccccc}
+\hline Atividade & $\mathrm{N}$ & Média & Mediana & DP & Min & Max & Q1 & Q3 \\
+\hline Intensa & 30 & 79,6 & 82 & 10,5 & 62 & 90 & 70 & 85 \\
+\hline Fraca & 30 & 73,1 & 70 & 9,6 & 58 & 92 & 63 & 77 \\
+\hline
+\end{tabular}
+\begin{tablenotes}\footnotesize
+\item DP: desvio padrão, Q1: primeiro quartil, Q3: terceiro quartil
+\end{tablenotes}
+\end{table}
+
+
+
+Indique se as seguintes afirmações estão corretas, justificando a sua respostas:
+
+a) $5 \%$ e $50 \%$ dos estudantes com atividade física intensa e fraca, respectivamente, tiveram pulsação inferior a 70 .
+
+b) A proporção de estudantes com fraca atividade física com pulsação inferior a 63 é menor que a proporção de estudantes com atividade física intensa com pulsação inferior a $70$.
+
+c) A atividade física não tem efeito na média da pulsação dos estudantes.
+
+d) Mais da metade dos estudantes com atividade física intensa têm pulsação maior que 82 .
+
+# Exercício 19
+Os histogramas apresentados na Figura 3.35 mostram a distribuição
+das temperaturas (ºC) ao longo de vários dias de investigação para
+duas regiões (R1 e R2). Indique se as afirmaçõoes abaixo estão corretas,
+justificando as respostas:
+
+
+
+a) As temperaturas das regiões R1 e R2 têm mesma média e mesma variância.
+b) Não é possível comparar as variâncias.
+c) A temperatura média da regiôes R2 é maior que a de R1.
+d) As temperaturas das regiôes R1 e R2 têm mesma média e variância diferentes
+
+# Exercício 23
+A tabela abaixo representa a distribuição do número de dependentes
+por empregado de uma determinada empresa
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|}
+\hline
+Dependentes & Frequência \\ \hline
+1           & 40         \\ \hline
+2           & 50         \\ \hline
+3           & 30         \\ \hline
+4           & 20         \\ \hline
+5           & 10         \\ \hline
+Total       & 150        \\ \hline
+\end{tabular}
+\end{table}
+
+Nenhuma das alternativas, pois tantoa mediana quanto a moda assumem valores que nao estão
+presentes na distribuição de dependentes visto as alternativas a,c e como a media é um valor sensivel
+aos valores da amostra ela nao será exatamente 1, de fato, a media é igual a 2.4 enquanto a mediana = 2 e moda = 2,assim podemos excluir tambem as alternativas b, d.
+
+
+# Exercício 28
+
+
+
+# Exercício 30
+
+Considere os valores $X_{1}, \ldots, X_{n}$ de uma variável $X$, com média $\bar{X}$ desvio padrão $S$. Mostre que a variável $Z$, cujos valores são $Z_{i}=$ $\left(X_{i}-\bar{X}\right) / S, i=1, \ldots, n$ tem média 0 e desvio padrão $1$.
+
+\[\bar{Z}  =  1/n \sum_{1}^{n} Z_{i}\]
+\[\bar{Z}  =  1/n \sum_{1}^{n} ( X_{i} - \bar{X} )/S \]
+\[\bar{Z}  =  \frac{1}{S}( 1/n\sum_{1}^{n}  X_{i} -  1/n\sum_{1}^{n}\bar{X} )  \]           
+
+\[
+\bar{X}  = 1/n\sum_{1}^{n}  X_{i} \qquad
+n\bar{X} = \sum_{1}^{n}n\bar{X}
+\]
+
+\[\bar{Z}  =  \frac{1}{S}( \bar{X} - \frac{n\bar{X}}{n} ) \]
+\[\bar{Z}  =  0 \]
+
+\[ \text{dp(Z)} =  \sqrt{ var(Z) } \]
+\[ \text{dp(Z)} =  \sqrt { 1/n \sum_{1}^{n} ( Z_{i} - \bar{Z} ) ^ 2} \] ,  \[\bar{Z} =  0 \]
+\[ \text{dp(Z)} =  \sqrt { \frac{1}{n}\sum_{1}^{n} \frac{X_{i} - \bar{X}}{S} } \]           
+\[\text{dp(Z)}  = \sqrt { \frac{1}{S^2} \frac{1}{n}\sum_{1}^{n} X_{i}^ 2  - 2X_{i}\bar{X} + \bar{X}^2  } \]
+
+\[
+\bar{X}^2 = \frac{1}{n}\sum_{1}^{n} X_{i}^2  \qquad 
+\bar{X} = \frac{1}{n}\sum_{1}^{n} X_{i}  \qquad
+n\bar{X}^2 = \frac{1}{n}\sum_{1}^{n} \bar{X}^2
+\]
+
+
+\[\text{dp(Z)}   = \sqrt { \frac{1}{S^2} ( X_{i}^ 2  - 2\bar{X}^2 + \bar{X}^2)  } \]
+\[\text{dp(Z)}   = \sqrt { \frac{1}{S^2} ( \bar{X}^2 - \bar{X}^2)  } \]
+\[\text{dp(Z)}   = \sqrt { \frac{S^2}{S^2} } \]
+\[\text{dp(Z)}  =  1 \]
+
+# Exercício 33
+
+Com a finalidade de entender a diferença entre "desvio padrão" e "erro padrão",
+
+a) Simule 10000 dados de uma distribuição normal com média 12 e desvio padrão 4. Construa o histograma correspondente, calcule a média e o desvio padrão amostrais e compare os valores obtidos com aqueles utilizados na geração dos dados.
+
+b) Simule 500 amostras de tamanho $n=4$ dessa população. Calcule a média amostral de cada amostra, construa o histograma dessas médias e estime o correspondente desvio padrão (que é o erro padrão da média).
+
+c) Repita os passos a) e b) com amostras de tamanhos $n=9$ e $n=100$. Comente os resultados comparando-os com aqueles preconizados pela teoria.
+
+d) Repita os passos a) - c) simulando amostras de uma distribuição qui-quadrado com 3 graus de liberdade.
+
