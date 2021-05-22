@@ -44,9 +44,6 @@ editor_options:
   chunk_output_type: console
 ---
 
-<!-- mudar o current working directory para a pasta do projeto: -->
-<!--  Seta para baixo ao lado de "Knit" -> Knit directory -> Selecionar "Project Directory" -->
-
 \pagebreak
 
 ```{r setup, include=FALSE}
@@ -67,8 +64,8 @@ O arquivo `rehabcardio` contém informações sobre um estudo de reabilitação 
 
 
 # Exercício 14
-Na tabela abaixo estão indicadas as durações de 335 lâmpadas.
 
+Na tabela abaixo estão indicadas as durações de 335 lâmpadas.
 
 | Duração(horas) | Número de Lâmpadas |
 |:--------------:|:------------------:|
@@ -94,13 +91,21 @@ brk = c(0,100,200,300,400,500,800)
 hist(d, main = "Duração em horas de 335 lâmpadas", xlab="Horas",breaks = brk,  xlim = c(0,800))
 ```
 
-b) Calcule os quantis de ordem p = 0,1; 0,3; 0,5; 0,7 e 0,9
-```{r, echo=FALSE}
-
-d = sort(d,decreasing = FALSE)
-q = quantile(d, c(.1, .3, .5, .7, .9)) 
-
+b) Calcule os quantis de ordem p=0,1; 0,3; 0,5; 0,7 e 0,9
+```{r, echo=FALSE, results = FALSE}
+tibble(
+  Probabilidade = c(.1, .3, .5, .7, .9),
+  Quantil = quantile(d, Probabilidade, type = 4)#type = 4 é interpolação como na p53 do livro
+) %>% kable(caption = 'Quantis de Ordem.')
 ```
+<!-- \begin{table}[H] -->
+<!-- \centering -->
+<!-- \begin{tabular}{|c|c|l|l|l|l|} -->
+<!-- \hline -->
+<!-- p    & 0.1  & 0.3   & 0.5 & 0.7   & 0.9   \\ \hline -->
+<!-- Q(p) & 54.4 & 131.4 & 220 & 319.8 & 454.8 \\ \hline -->
+<!-- \end{tabular} -->
+<!-- \end{table} -->
 
 # Exercício 15
 
@@ -172,29 +177,61 @@ c) A temperatura média da regiôes R2 é maior que a de R1.
 d) As temperaturas das regiôes R1 e R2 têm mesma média e variância diferentes
 
 # Exercício 23
+
 A tabela abaixo representa a distribuição do número de dependentes
-por empregado de uma determinada empresa
+por empregado de uma determinada empresa.
 
-\begin{table}[H]
-\centering
-\begin{tabular}{|c|c|}
-\hline
-Dependentes & Frequência \\ \hline
-1           & 40         \\ \hline
-2           & 50         \\ \hline
-3           & 30         \\ \hline
-4           & 20         \\ \hline
-5           & 10         \\ \hline
-Total       & 150        \\ \hline
-\end{tabular}
-\end{table}
+```{r, echo=FALSE}
+x <- tribble(
+  ~Dependentes,~`Frequência`, 
+  1, 40,
+  2, 50,
+  3, 30,
+  4, 20,
+  5, 10,
+) 
+x %>% 
+  mutate(Dependentes=factor(Dependentes)) %>% 
+  janitor::adorn_totals() %>% 
+  kable()
 
-a) 50; 15; 50 b) 1; 2,1; 1 c) 50,5; 50; 50 d) 1; 1; 1
 
-Nenhuma das alternativas, pois tanto a mediana quanto a moda assumem valores que nao estão
-presentes na distribuição de dependentes, visto as alternativas a,c e como a media é um valor 
-sensivel aos valores da amostra ela nao será exatamente 1, de fato, a media é igual a 2.4 
-enquanto a mediana = 2 e moda = 2,assim podemos excluir tambem as alternativas b, d.
+
+```
+
+
+
+<!-- \begin{table}[H] -->
+<!-- \centering -->
+<!-- \begin{tabular}{|c|c|} -->
+<!-- \hline -->
+<!-- Dependentes & Frequência \\ \hline -->
+<!-- 1           & 40         \\ \hline -->
+<!-- 2           & 50         \\ \hline -->
+<!-- 3           & 30         \\ \hline -->
+<!-- 4           & 20         \\ \hline -->
+<!-- 5           & 10         \\ \hline -->
+<!-- Total       & 150        \\ \hline -->
+<!-- \end{tabular} -->
+<!-- \end{table} -->
+
+Nenhuma das alternativas. De fato, a media é igual a 2.4 enquanto a mediana = 2 e moda = 2.
+
+
+```{r}
+x <- x %>% 
+  mutate(freq=`Frequência`/sum(`Frequência`))
+
+# média
+x %>% summarise(media = sum(Dependentes * freq)) %>% pull
+
+# mediana
+x <- x %>% mutate(freqacum = cumsum(freq))
+x %>% summarise(mediana = Dependentes[findInterval(0.5, freqacum)+1]) %>% pull
+
+# moda
+x %>% summarise(moda = Dependentes[which.max(freq)]) %>% pull
+```
 
 
 # Exercício 28
@@ -233,6 +270,9 @@ n\bar{X}^2 = \frac{1}{n}\sum_{1}^{n} \bar{X}^2
 \[\text{dp(Z)}   = \sqrt { \frac{1}{S^2} ( \bar{X}^2 - \bar{X}^2)  } \]
 \[\text{dp(Z)}   = \sqrt { \frac{S^2}{S^2} } \]
 \[\text{dp(Z)}  =  1 \]
+
+
+
 
 # Exercício 33
 
