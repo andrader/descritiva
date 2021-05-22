@@ -52,14 +52,10 @@ editor_options:
 ```{r setup, include=FALSE}
 options(width = 60)
 knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
-
 library(tidyverse)
 library(knitr)
-
 source('src/helpers.R')
 ```
-
-
 
 # Exercício 1
 
@@ -67,24 +63,46 @@ O arquivo `rehabcardio` contém informações sobre um estudo de reabilitação 
 
 # Exercício 12
 
-Construa gráficos de quantis e de simetria para os dados de manchas solares disponíveis no arquivo `manchas`.
+
 
 
 # Exercício 14
-
-Uma outra medida de assimetria é
-$$
-A=\frac{\left(Q_{3}-Q_{2}\right)-\left(Q_{2}-Q_{1}\right)}{Q_{3}-Q_{1}}
-$$
-que é igual a zero no caso de distribuições simétricas. Calcule-a para os dados do Exercício 6 .
+Na tabela abaixo estão indicadas as durações de 335 lâmpadas.
 
 
+| Duração(horas) | Número de Lâmpadas |
+|:--------------:|:------------------:|
+|      0-100     |         82         |
+|     100-200    |         71         |
+|     200-300    |         68         |
+|     300-400    |         56         |
+|     400-500    |         43         |
+|     500-800    |         15         |
+
+a) Esboce o histograma correspondente.
+
+```{r, echo=FALSE}
+
+v  = floor(runif(82, min=0, max=101))
+v1 = floor(runif(71, min=100, max=201))
+v2 = floor(runif(68, min=200, max=301))
+v3 = floor(runif(56, min=300, max=401))
+v4 = floor(runif(43, min=400, max=501))
+v5 = floor(runif(15, min=500, max=801))
+d = c(v,v1,v2,v3,v4,v5)
+brk = c(0,100,200,300,400,500,800)
+hist(d, main = "Duração em horas de 335 lâmpadas", xlab="Horas",breaks = brk,  xlim = c(0,800))
+```
+
+b) Calcule os quantis de ordem p = 0,1; 0,3; 0,5; 0,7 e 0,9
+```{r, echo=FALSE}
+
+d = sort(d,decreasing = FALSE)
+q = quantile(d, c(.1, .3, .5, .7, .9)) 
+
+```
 
 # Exercício 15
-
-Considere os valores $X_{1}, \ldots, X_{n}$ de uma variável $X$, com média $\bar{X}$ desvio padrão $S$. Mostre que a variável $Z$, cujos valores são $Z_{i}=$ $\left(X_{i}-\bar{X}\right) / S, i=1, \ldots, n$ tem média 0 e desvio padrão $1$.
-
-# Exercício 17
 
 Os dados apresentados na Tabela \@ref(tab:table17) referem-se aos instantes nos quais o centro de controle operacional de estradas rodoviárias recebeu chamados solicitando algum tipo de auxílio em duas estradas num determinado dia.
 \begin{table}[H]
@@ -112,7 +130,8 @@ b) Calcule os intervalos de tempo entre as sucessivas chamadas e descreva-os, pa
 
 c) Por intermédio de um gráfico do tipo QQ, verifique se a distribuicão da variável "Intervalo de tempo entre as chamadas" em cada estrada é compatível com um modelo normal. Faça o mesmo para um modelo exponencial. Compare as distribuições de frequências correspondentes às duas estradas.
 
-# Exercício 19
+# Exercício 17
+
 
 Considere o seguinte resumo descritivo da pulsação de estudantes com atividade física intensa e fraca:
 \begin{table}[H]
@@ -139,39 +158,81 @@ c) A atividade física não tem efeito na média da pulsação dos estudantes.
 
 d) Mais da metade dos estudantes com atividade física intensa têm pulsação maior que 82 .
 
+# Exercício 19
+Os histogramas apresentados na Figura 3.35 mostram a distribuição
+das temperaturas (ºC) ao longo de vários dias de investigação para
+duas regiões (R1 e R2). Indique se as afirmaçõoes abaixo estão corretas,
+justificando as respostas:
+
+
+
+a) As temperaturas das regiões R1 e R2 têm mesma média e mesma variância.
+b) Não é possível comparar as variâncias.
+c) A temperatura média da regiôes R2 é maior que a de R1.
+d) As temperaturas das regiôes R1 e R2 têm mesma média e variância diferentes
+
 # Exercício 23
+A tabela abaixo representa a distribuição do número de dependentes
+por empregado de uma determinada empresa
 
-Num conjunto de dados, o primeiro quartil é 10, a mediana é $15$ e o terceiro quartil é 20. Indique quais das seguintes afirmativas são verdadeiras, justificando sua resposta:
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|}
+\hline
+Dependentes & Frequência \\ \hline
+1           & 40         \\ \hline
+2           & 50         \\ \hline
+3           & 30         \\ \hline
+4           & 20         \\ \hline
+5           & 10         \\ \hline
+Total       & 150        \\ \hline
+\end{tabular}
+\end{table}
 
-a) A distância interquartis é 5 .
+a) 50; 15; 50 b) 1; 2,1; 1 c) 50,5; 50; 50 d) 1; 1; 1
 
-b) $\mathrm{O}$ valor 32 seria considerado outlier segundo o critério utilizado na construção do boxplot.
+Nenhuma das alternativas, pois tanto a mediana quanto a moda assumem valores que nao estão
+presentes na distribuição de dependentes, visto as alternativas a,c e como a media é um valor 
+sensivel aos valores da amostra ela nao será exatamente 1, de fato, a media é igual a 2.4 
+enquanto a mediana = 2 e moda = 2,assim podemos excluir tambem as alternativas b, d.
 
-c) A mediana ficaria alterada de 2 unidades se um ponto com valor acima do terceiro quartil fosse substituído por outro 2 vezes maior.
-
-d) O valor mínimo é maior do que zero.
 
 # Exercício 28
 
-Os dados encontrados no arquivo `esforco` são provenientes de um estudo sobre teste de esforço cardiopulmonar em pacientes com insuficiência cardíaca. As variáveis medidas durante a realização do teste foram observadas em quatro momentos distintos: repouso (REP), limiar anaeróbio (LAN), ponto de compensação respiratório (PCR) e pico (PICO). As demais variáveis são referentes às características demográficas e clínicas dos pacientes e foram registradas uma única vez.
 
-a) Descreva a distribuição da variável consumo de oxigênio (VO2) em cada um dos quatro momentos de avaliação utilizando medidas resumo (mínimo, máximo, quartis, mediana, média, desvio padrão, etc.), boxplots e histogramas. Você identifica algum paciente com valores de consumo de oxigênio discrepantes? Interprete os resultados.
-
-b) Descreva a distribuição da classe funcional NYHA por meio de uma tabela de frequências. Utilize um método gráfico para representar essa tabela.
 
 # Exercício 30
 
-Utilizando o mesmo enunciado da questão anterior (29), indique a resposta correta:
+Considere os valores $X_{1}, \ldots, X_{n}$ de uma variável $X$, com média $\bar{X}$ desvio padrão $S$. Mostre que a variável $Z$, cujos valores são $Z_{i}=$ $\left(X_{i}-\bar{X}\right) / S, i=1, \ldots, n$ tem média 0 e desvio padrão $1$.
 
-a) Não é possível estimar nem a média nem a variância com esses dados.
+\[\bar{Z}  =  1/n \sum_{1}^{n} Z_{i}\]
+\[\bar{Z}  =  1/n \sum_{1}^{n} ( X_{i} - \bar{X} )/S \]
+\[\bar{Z}  =  \frac{1}{S}( 1/n\sum_{1}^{n}  X_{i} -  1/n\sum_{1}^{n}\bar{X} )  \]           
 
-b) A variância é menor que 30 .
+\[
+\bar{X}  = 1/n\sum_{1}^{n}  X_{i} \qquad
+n\bar{X} = \sum_{1}^{n}n\bar{X}
+\]
 
-c) A média estimada é 12,8 .
+\[\bar{Z}  =  \frac{1}{S}( \bar{X} - \frac{n\bar{X}}{n} ) \]
+\[\bar{Z}  =  0 \]
 
-d) Em apenas $35 \%$ dos casos, o número de vasos é maior que $10$.
+\[ \text{dp(Z)} =  \sqrt{ var(Z) } \]
+\[ \text{dp(Z)} =  \sqrt { 1/n \sum_{1}^{n} ( Z_{i} - \bar{Z} ) ^ 2} \] ,  \[\bar{Z} =  0 \]
+\[ \text{dp(Z)} =  \sqrt { \frac{1}{n}\sum_{1}^{n} \frac{X_{i} - \bar{X}}{S} } \]           
+\[\text{dp(Z)}  = \sqrt { \frac{1}{S^2} \frac{1}{n}\sum_{1}^{n} X_{i}^ 2  - 2X_{i}\bar{X} + \bar{X}^2  } \]
 
-e) Nenhuma das anteriores.
+\[
+\bar{X}^2 = \frac{1}{n}\sum_{1}^{n} X_{i}^2  \qquad 
+\bar{X} = \frac{1}{n}\sum_{1}^{n} X_{i}  \qquad
+n\bar{X}^2 = \frac{1}{n}\sum_{1}^{n} \bar{X}^2
+\]
+
+
+\[\text{dp(Z)}   = \sqrt { \frac{1}{S^2} ( X_{i}^ 2  - 2\bar{X}^2 + \bar{X}^2)  } \]
+\[\text{dp(Z)}   = \sqrt { \frac{1}{S^2} ( \bar{X}^2 - \bar{X}^2)  } \]
+\[\text{dp(Z)}   = \sqrt { \frac{S^2}{S^2} } \]
+\[\text{dp(Z)}  =  1 \]
 
 # Exercício 33
 
