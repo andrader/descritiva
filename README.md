@@ -11,7 +11,7 @@ Exercícios do capítulo 3 de Morettin e Singer (versão maio 2021).
 - [x] 14 - Rafael
 - [ ] 15
 - [ ] 17
-- [ ] 19
+- [x] 19 - Rubens Andrade
 - [x] 23 - Rafael
 - [ ] 28
 - [x] 30 - Rafael

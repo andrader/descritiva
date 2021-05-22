@@ -169,12 +169,48 @@ das temperaturas (ºC) ao longo de vários dias de investigação para
 duas regiões (R1 e R2). Indique se as afirmaçõoes abaixo estão corretas,
 justificando as respostas:
 
-
-
 a) As temperaturas das regiões R1 e R2 têm mesma média e mesma variância.
 b) Não é possível comparar as variâncias.
 c) A temperatura média da regiôes R2 é maior que a de R1.
 d) As temperaturas das regiôes R1 e R2 têm mesma média e variância diferentes
+
+*Resposta*: Apenas a alternativa **d)** está correta.
+
+A seguir os cálculos que justificam a resposta:
+```{r}
+# temperaturas
+x<- c(10,12,14,16,18)
+
+# freqs absolutas
+Freq1<- c(6,4,1,4,6)
+Freq2<- c(4,4,5,4,4)
+# freqs relativas
+f1 <- Freq1/sum(Freq1)
+f2 <- Freq2/sum(Freq2)
+
+# medias
+EX_R1 <- sum(x*f1)
+EX_R2 <- sum(x*f2)
+
+# variancias
+x2 <- x^2
+EX2_R1 <- sum(x2*f1)
+VARX_R1 <- EX2_R1 - (EX_R1)^2
+
+EX2_R2 <- sum(x2*f2)
+VARX_R2 <- EX2_R2 - (EX_R2)^2
+
+# tabela resumo
+tibble(
+  `Região` = paste0("R",1:2),
+  Média = c(EX_R1, EX_R2),
+  Variância = c(VARX_R1, VARX_R2),
+) %>% kable(caption = "Medidas Resumo.")
+
+```
+
+
+
 
 # Exercício 23
 
