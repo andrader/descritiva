@@ -316,9 +316,140 @@ Com a finalidade de entender a diferença entre "desvio padrão" e "erro padrão
 
 a) Simule 10000 dados de uma distribuição normal com média 12 e desvio padrão 4. Construa o histograma correspondente, calcule a média e o desvio padrão amostrais e compare os valores obtidos com aqueles utilizados na geração dos dados.
 
+```{r}
+exercise_a <- function(mean1, sd1, n) {
+  
+  normal <- rnorm(n, mean1, sd1)
+  
+  hist(normal, freq=FALSE,
+    main=paste("Histograma de", n, "amostras da função normal"),
+    xlab="Valor da amostra",
+    ylab="Densidade",
+    xlim = c(-10, 40),
+    ylim = c(0, 0.3),
+    #breaks = 50
+  )
+  sd2 <- sd(normal)
+  mean2 <- mean(normal)
+  
+  print(paste("Média amostral:", mean2))
+  print(paste("Desvio padrão amostral:", sd2))
+
+  return(normal)
+}
+
+mean1 <- 12
+sd1 <- 4
+n <- 10000
+
+normal <- exercise_a(mean1, sd1, n)
+```
+
+A média e o desvio padrão amostrais se aproximam dos valores utilizados para gerar os dados, mas não são exatamente iguais. Isso pode ser explicado pelos valores amostrais serem aleatoriamente gerados.
+
 b) Simule 500 amostras de tamanho $n=4$ dessa população. Calcule a média amostral de cada amostra, construa o histograma dessas médias e estime o correspondente desvio padrão (que é o erro padrão da média).
+
+```{r}
+exercise_b <- function (normal, n_sample, n_per_sample) {
+  
+  samples <- replicate(n_sample, sample(normal, n_per_sample), simplify=FALSE)
+
+  means <- as.numeric(lapply(samples, mean))
+  hist(means, freq=FALSE,
+    main=paste("Histograma das médias de", n_sample, "amostras de tamanho", n_per_sample),
+    xlab="Valor da amostra",
+    ylab="Densidade",
+    xlim = c(-10, 40),
+    ylim = c(0, 1.2),
+    #breaks = 50
+  )
+  print(paste("Erro padrão da média:", sd(means)))
+  return(means)
+}
+
+n_sample = 500  
+n_per_sample = 4
+means <- exercise_b(normal, n_sample, n_per_sample)
+```
 
 c) Repita os passos a) e b) com amostras de tamanhos $n=9$ e $n=100$. Comente os resultados comparando-os com aqueles preconizados pela teoria.
 
+```{r}
+normal <- exercise_a(mean1, sd1, n)
+
+n_per_sample = 9
+means <- exercise_b(normal, n_sample, n_per_sample)
+
+n_per_sample = 100
+means <- exercise_b(normal, n_sample, n_per_sample)
+```
+Com o aumento do tamanho das amostras, a distribuição das médias se assemelhou a uma distribuição normal. O erro padrão da média diminuiu. Isso pode ser visualmente averiguado nos histogramas das médias, cujos valores ficam cada vez mais próximos do centro conforme n aumenta. Todos esses resultados são previstos em teoria.
+
 d) Repita os passos a) - c) simulando amostras de uma distribuição qui-quadrado com 3 graus de liberdade.
 
+Passo a)
+
+```{r}
+exercise_a <- function(degrees_of_freedom, n) {
+  chisq <- rchisq(n, degrees_of_freedom)
+  
+  hist(chisq, freq=FALSE,
+    main=paste("Histograma de", n, "amostras da distribuição qui-quadrado"),
+    xlab="Valor da amostra",
+    ylab="Densidade",
+    xlim = c(0, 30),
+    ylim = c(0, 0.3),
+    #breaks = 50
+  )
+  sd2 <- sd(chisq)
+  mean2 <- mean(chisq)
+  
+  print(paste("Média amostral:", mean2))
+  print(paste("Desvio padrão amostral:", sd2))
+  
+  return(chisq)
+}
+
+degrees_of_freedom <- 3
+n <- 10000
+
+chisq <- exercise_a(degrees_of_freedom, n)
+```
+Novamente, a média e o desvio padrão amostrais se aproximam dos valores utilizados para gerar os dados, mas não são exatamente iguais dado que os valores amostrais são aleatoriamente gerados.
+
+Passo b)
+
+```{r}
+exercise_b <- function (chisq, n_sample, n_per_sample) {
+  samples <- replicate(n_sample, sample(chisq, n_per_sample), simplify=FALSE)
+
+  means <- as.numeric(lapply(samples, mean))
+  hist(means, freq=FALSE,
+    main=paste("Histograma das médias de", n_sample, "amostras de tamanho", n_per_sample),
+    xlab="Média",
+    ylab="Densidade",
+    xlim = c(0, 30),
+    ylim = c(0, 2.0),
+    #breaks = 50
+  )
+  print(paste("Erro padrão da média:", sd(means)))
+  return(means)
+}
+n_sample = 500  
+n_per_sample = 4
+means <- exercise_b(chisq, n_sample, n_per_sample)
+
+```
+
+Passo c)
+
+```{r}
+chisq <- exercise_a(degrees_of_freedom, n)
+
+n_per_sample = 9
+means <- exercise_b(chisq, n_sample, n_per_sample)
+
+n_per_sample = 100
+means <- exercise_b(chisq, n_sample, n_per_sample)
+```
+Com o aumento do tamanho das amostras, a distribuição das médias se assemelhou a uma normal, mesmo quando as amostras são geradas a partir da distribuição qi-quadrado. Novamente, o erro padrão da média diminuiu. Isso pode ser visualmente averiguado nos histogramas das médias, cujos valores ficam cada vez mais próximos do centro conforme n aumenta. Todos esses resultados são previstos em teoria.
