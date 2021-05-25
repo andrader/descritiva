@@ -1,7 +1,7 @@
 ---
 title: "MAE0217 - Estatística Descritiva - Lista 2"
 author: |
-  | Natalia Koza\thanks{Número USP: 10698432}
+  | Natalia Hitomi Koza\thanks{Número USP: 10698432}
   | Rafael Gonçalves Pereira da Silva\thanks{Número USP: 9009600}
   | Ricardo Geraldes Tolesano\thanks{Número USP: 10734557}
   | Rubens Kushimizo Rodrigues Xavier\thanks{Número USP: 8626718}
@@ -157,11 +157,40 @@ Indique se as seguintes afirmações estão corretas, justificando a sua respost
 
 a) $5 \%$ e $50 \%$ dos estudantes com atividade física intensa e fraca, respectivamente, tiveram pulsação inferior a 70 .
 
+Essa afirmação não está correta. Dado que temos os quantis das amostras, podemos afirmar que:
+
+* Na atividade intensa: usando que o primeiro quantil é 70, temos que pelo menos 25% dos estudantes obtiveram pulsação menor ou igual a 70, e não 5%.  
+
+* Na atividade fraca: considerando $x_1 \leq x_2 \leq … \leq x_{30}$ a amostra ordenada e sabendo que a mediana é $\frac{x_{15} + x_{16}}{2} = 70$, temos duas opções:
+
+    * $x_{15} < 70$ e $x_{16} > 70$: nesse caso 50% dos estudantes obtiveram pulsação menor que 70.
+
+    * $x_{15} = x_{16} = 70$ já nessa situação temos que menos de 50% dos estudantes obtiveram pulsação menor que 70.
+    
+Logo, a afirmação não é verdadeira.
+
 b) A proporção de estudantes com fraca atividade física com pulsação inferior a 63 é menor que a proporção de estudantes com atividade física intensa com pulsação inferior a $70$.
+
+A afirmação é incorreta, pois não conseguimos deduzir essa informação. Para os estudantes com fraca atividade física, 63 equivale ao primeiro quantil, então 25% dos estudantes apresenta pulsação menor ou igual a esse valor, analogamente 70 é o primeiro quantil para a amostra da pulsações durante atividade física intensa, mas não temos dados que relacionam a proporção de uma com a outra.
 
 c) A atividade física não tem efeito na média da pulsação dos estudantes.
 
+Esta afirmação é falsa. Analisando o segundo coeficiente de assimetria de Pearson para as atividades, temos:
+
+* Atividade intensa: $sk_1 = 3 \cdot \frac{79,6 - 82}{10,5} \approx -0,229 < 0$
+* Atividade fraca: $sk_2 = 3 \cdot \frac{73,1 - 70}{9,6} \approx 0,323 > 0$
+
+O coeficiente negativo nos mostra que no caso das atividades físicas intensas os batimentos cardíacos se apresentam concentrados nos valores acima da mediana, enquanto que o coeficiente positivo das atividades físicas fracas nos mostra uma concentração em valores abaixo da mediana, acarretando que a média no primeiro caso tende a ser mais alta que no segundo.
+
 d) Mais da metade dos estudantes com atividade física intensa têm pulsação maior que 82 .
+
+Essa afirmação está incorreta. Se considerarmos $x_1 \leq x_2 \leq … \leq x_{30}$ as pulsações ordenadas, temos que a mediana é $\frac{x_{15}+x_{16}}{2} = 82$, assim, há duas possibilidades:
+
+* $x_{15} < 82$ e $x_{16} > 82$: nesse caso $x_i \geq 82$ para $i \geq 16$, no máximo haveriam 15 alunos com pulsação superior a 82.
+
+* $x_{15} = x_{16} = 82$: então $x_j \geq 82$ para $j \geq 17$, no máximo 14 alunos teriam pulsação superior a 82.
+
+Obtemos então que no máximo metade dos alunos tem pulsação maior que 82 e não mais que isso.
 
 # Exercício 19
 Os histogramas apresentados na Figura 3.35 mostram a distribuição
