@@ -59,9 +59,29 @@ source('src/helpers.R')
 O arquivo `rehabcardio` contém informações sobre um estudo de reabilitação de pacientes cardíacos. Elabore um relatório indicando possíveis inconsistências na matriz de dados e faça uma análise descritiva de todas as variáveis do estudo, construindo distribuições de frequências para as variáveis qualitativas e obtendo medidas resumo para as variáveis qualitativas.
 
 # Exercício 12
+Construa gráficos de quantis e de simetria para os dados de manchas solares disponíveis no arquivo `manchas`.
+'''{r}
+dados <- read_xlsx('data/manchas_editado.xlsx') 
+dados_num = dados$Número
 
+# Grafico de quantis
+qqnorm(dados_num)
+qqline(dados_num, col = 2,lwd=2,lty=2)
 
-
+# Grafico de Simetria
+dados_num_ord = sort(dados_num)
+q2 = quantile(dados_num_ord, probs=c(.50))
+n = length(dados_num_ord)
+u <- c()
+v <- c()
+for (i in 1:((n+1)/2)){
+  u = append(u, (q2 - dados_num_ord[[i]]))
+  v = append(v, (dados_num_ord[[(n+1-i)]] - q2))
+}
+plot(u, v, pch=19, xlab="Dispersão inferior (ui)", ylab="Dispersão superior (vi)",col="darkblue",xlim=c(0,max(u)),ylim=c(0,max(v)))
+title("Gráfico de simetria para Manchas Solares.")
+abline(0,1)
+'''
 
 # Exercício 14
 
@@ -92,14 +112,12 @@ hist(d, main = "Duração em horas de 335 lâmpadas", xlab="Horas",breaks = brk,
 ```
 
 b) Calcule os quantis de ordem p=0,1; 0,3; 0,5; 0,7 e 0,9
-
-```{r, echo=FALSE}
+```{r, echo=FALSE, results = FALSE}
 tibble(
   Probabilidade = c(.1, .3, .5, .7, .9),
   Quantil = quantile(d, Probabilidade, type = 4)#type = 4 é interpolação como na p53 do livro
 ) %>% kable(caption = 'Quantis de Ordem.')
 ```
-
 <!-- \begin{table}[H] -->
 <!-- \centering -->
 <!-- \begin{tabular}{|c|c|l|l|l|l|} -->
