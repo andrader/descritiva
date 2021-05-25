@@ -59,7 +59,9 @@ source('src/helpers.R')
 O arquivo `rehabcardio` contém informações sobre um estudo de reabilitação de pacientes cardíacos. Elabore um relatório indicando possíveis inconsistências na matriz de dados e faça uma análise descritiva de todas as variáveis do estudo, construindo distribuições de frequências para as variáveis qualitativas e obtendo medidas resumo para as variáveis qualitativas.
 
 # Exercício 12
+
 Construa gráficos de quantis e de simetria para os dados de manchas solares disponíveis no arquivo `manchas`.
+
 '''{r}
 dados <- read_xlsx('data/manchas_editado.xlsx') 
 dados_num = dados$Número
