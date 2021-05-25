@@ -272,6 +272,58 @@ x %>% summarise(moda = Dependentes[which.max(freq)]) %>% pull
 
 # Exercício 28
 
+a)
+
+Temos que $W_i = X_i +k,\ i=1,...,n$, $k$ é uma constante e $\{X_i\}_{i=1,...,n}$ um conjunto de dados.
+
+Além disso,
+$$
+\bar{X} = \frac{1}{n} \sum_{i=1}^{n}{X_i}
+$$
+
+Então, calculemos a média $\bar{W}$ do conjunto $\{W_i\}_{i=1,...,n}$,
+$$
+\bar{W} = \frac{1}{n} \sum_{i=1}^{n}{W_i}
+= \frac{1}{n} \sum_{i=1}^{n}{(X_i+k)}\\
+= \frac{1}{n} \sum_{i=1}^{n}{X_i}+\frac{1}{n} \sum_{i=1}^{n}{k}\\
+= \bar{X}+k
+$$
+
+De forma similar, calculemos a variância amostral $S^2_W$ de $\{W_i\}_{i=1,...,n}$,
+
+$$
+S^2_W = \frac{1}{n-1} \sum_{i=1}^{n}{(W_i-\bar{W})^2}
+= \frac{1}{n-1} \sum_{i=1}^{n}{((X_i+k)-(\bar{X}+k))^2}
+= \frac{1}{n-1} \sum_{i=1}^{n}{(X_i-\bar{X})^2}
+= S^2_X
+$$
+onde $S^2_X$ é a variância amostral de $\{X_i\}_{i=1,...,n}$.
+
+
+b)
+
+Temos agora que $V_i = kX_i,\ i=1,...,n$, $k$ é uma constante e $\{X_i\}_{i=1,...,n}$ um conjunto de dados.
+
+
+Então, calculemos a média $\bar{V}$ do conjunto $\{V_i\}_{i=1,...,n}$,
+$$
+\bar{V} = \frac{1}{n} \sum_{i=1}^{n}{V_i}
+= \frac{1}{n} \sum_{i=1}^{n}{(kX_i)}
+= \frac{k}{n} \sum_{i=1}^{n}{X_i}
+= k\bar{X}
+$$
+
+De forma similar, calculemos a variância amostral $S^2_V$ de $\{V_i\}_{i=1,...,n}$,
+
+$$
+S^2_V = \frac{1}{n-1} \sum_{i=1}^{n}{(V_i-\bar{V})^2}
+= \frac{1}{n-1} \sum_{i=1}^{n}{((kX_i)-(k\bar{X}))^2}
+= \frac{k^2}{n-1} \sum_{i=1}^{n}{(X_i-\bar{X})^2}
+= k^2S^2_X
+$$
+onde $S^2_X$ é a variância amostral de $\{X_i\}_{i=1,...,n}$.
+
+
 
 
 # Exercício 30
