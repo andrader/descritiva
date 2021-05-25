@@ -1,7 +1,7 @@
 ---
 title: "MAE0217 - Estatística Descritiva - Lista 2"
 author: |
-  | Natalia Koza\thanks{Número USP: 10698432}
+  | Natalia Hitomi Koza\thanks{Número USP: 10698432}
   | Rafael Gonçalves Pereira da Silva\thanks{Número USP: 9009600}
   | Ricardo Geraldes Tolesano\thanks{Número USP: 10734557}
   | Rubens Kushimizo Rodrigues Xavier\thanks{Número USP: 8626718}
@@ -60,8 +60,30 @@ O arquivo `rehabcardio` contém informações sobre um estudo de reabilitação 
 
 # Exercício 12
 
+Construa gráficos de quantis e de simetria para os dados de manchas solares disponíveis no arquivo `manchas`.
 
+'''{r}
+dados <- read_xlsx('data/manchas_editado.xlsx') 
+dados_num = dados$Número
 
+# Grafico de quantis
+qqnorm(dados_num)
+qqline(dados_num, col = 2,lwd=2,lty=2)
+
+# Grafico de Simetria
+dados_num_ord = sort(dados_num)
+q2 = quantile(dados_num_ord, probs=c(.50))
+n = length(dados_num_ord)
+u <- c()
+v <- c()
+for (i in 1:((n+1)/2)){
+  u = append(u, (q2 - dados_num_ord[[i]]))
+  v = append(v, (dados_num_ord[[(n+1-i)]] - q2))
+}
+plot(u, v, pch=19, xlab="Dispersão inferior (ui)", ylab="Dispersão superior (vi)",col="darkblue",xlim=c(0,max(u)),ylim=c(0,max(v)))
+title("Gráfico de simetria para Manchas Solares.")
+abline(0,1)
+'''
 
 # Exercício 14
 
@@ -79,7 +101,6 @@ Na tabela abaixo estão indicadas as durações de 335 lâmpadas.
 a) Esboce o histograma correspondente.
 
 ```{r, echo=FALSE}
-
 v  = floor(runif(82, min=0, max=101))
 v1 = floor(runif(71, min=100, max=201))
 v2 = floor(runif(68, min=200, max=301))
@@ -92,12 +113,16 @@ hist(d, main = "Duração em horas de 335 lâmpadas", xlab="Horas",breaks = brk,
 ```
 
 b) Calcule os quantis de ordem p=0,1; 0,3; 0,5; 0,7 e 0,9
-```{r, echo=FALSE, results = FALSE}
+
+
+```{r, echo=FALSE}
 tibble(
   Probabilidade = c(.1, .3, .5, .7, .9),
   Quantil = quantile(d, Probabilidade, type = 4)#type = 4 é interpolação como na p53 do livro
 ) %>% kable(caption = 'Quantis de Ordem.')
+
 ```
+
 <!-- \begin{table}[H] -->
 <!-- \centering -->
 <!-- \begin{tabular}{|c|c|l|l|l|l|} -->
@@ -157,11 +182,40 @@ Indique se as seguintes afirmações estão corretas, justificando a sua respost
 
 a) $5 \%$ e $50 \%$ dos estudantes com atividade física intensa e fraca, respectivamente, tiveram pulsação inferior a 70 .
 
+Essa afirmação não está correta. Dado que temos os quantis das amostras, podemos afirmar que:
+
+* Na atividade intensa: usando que o primeiro quantil é 70, temos que pelo menos 25% dos estudantes obtiveram pulsação menor ou igual a 70, e não 5%.  
+
+* Na atividade fraca: considerando $x_1 \leq x_2 \leq … \leq x_{30}$ a amostra ordenada e sabendo que a mediana é $\frac{x_{15} + x_{16}}{2} = 70$, temos duas opções:
+
+    * $x_{15} < 70$ e $x_{16} > 70$: nesse caso 50% dos estudantes obtiveram pulsação menor que 70.
+
+    * $x_{15} = x_{16} = 70$ já nessa situação temos que menos de 50% dos estudantes obtiveram pulsação menor que 70.
+    
+Logo, a afirmação não é verdadeira.
+
 b) A proporção de estudantes com fraca atividade física com pulsação inferior a 63 é menor que a proporção de estudantes com atividade física intensa com pulsação inferior a $70$.
+
+A afirmação é incorreta, pois não conseguimos deduzir essa informação. Para os estudantes com fraca atividade física, 63 equivale ao primeiro quantil, então 25% dos estudantes apresenta pulsação menor ou igual a esse valor, analogamente 70 é o primeiro quantil para a amostra da pulsações durante atividade física intensa, mas não temos dados que relacionam a proporção de uma com a outra.
 
 c) A atividade física não tem efeito na média da pulsação dos estudantes.
 
+Esta afirmação é falsa. Analisando o segundo coeficiente de assimetria de Pearson para as atividades, temos:
+
+* Atividade intensa: $sk_1 = 3 \cdot \frac{79,6 - 82}{10,5} \approx -0,229 < 0$
+* Atividade fraca: $sk_2 = 3 \cdot \frac{73,1 - 70}{9,6} \approx 0,323 > 0$
+
+O coeficiente negativo nos mostra que no caso das atividades físicas intensas os batimentos cardíacos se apresentam concentrados nos valores acima da mediana, enquanto que o coeficiente positivo das atividades físicas fracas nos mostra uma concentração em valores abaixo da mediana, acarretando que a média no primeiro caso tende a ser mais alta que no segundo.
+
 d) Mais da metade dos estudantes com atividade física intensa têm pulsação maior que 82 .
+
+Essa afirmação está incorreta. Se considerarmos $x_1 \leq x_2 \leq … \leq x_{30}$ as pulsações ordenadas, temos que a mediana é $\frac{x_{15}+x_{16}}{2} = 82$, assim, há duas possibilidades:
+
+* $x_{15} < 82$ e $x_{16} > 82$: nesse caso $x_i \geq 82$ para $i \geq 16$, no máximo haveriam 15 alunos com pulsação superior a 82.
+
+* $x_{15} = x_{16} = 82$: então $x_j \geq 82$ para $j \geq 17$, no máximo 14 alunos teriam pulsação superior a 82.
+
+Obtemos então que no máximo metade dos alunos tem pulsação maior que 82 e não mais que isso.
 
 # Exercício 19
 Os histogramas apresentados na Figura 3.35 mostram a distribuição
@@ -169,12 +223,42 @@ das temperaturas (ºC) ao longo de vários dias de investigação para
 duas regiões (R1 e R2). Indique se as afirmaçõoes abaixo estão corretas,
 justificando as respostas:
 
-
-
 a) As temperaturas das regiões R1 e R2 têm mesma média e mesma variância.
 b) Não é possível comparar as variâncias.
 c) A temperatura média da regiôes R2 é maior que a de R1.
 d) As temperaturas das regiôes R1 e R2 têm mesma média e variância diferentes
+
+*Resposta*: Apenas a alternativa **d)** está correta.
+
+A seguir os cálculos que justificam a resposta:
+```{r}
+# temperaturas
+x<- c(10,12,14,16,18)
+# freqs absolutas
+Freq1<- c(6,4,1,4,6)
+Freq2<- c(4,4,5,4,4)
+# freqs relativas
+f1 <- Freq1/sum(Freq1)
+f2 <- Freq2/sum(Freq2)
+# medias
+EX_R1 <- sum(x*f1)
+EX_R2 <- sum(x*f2)
+# variancias
+x2 <- x^2
+EX2_R1 <- sum(x2*f1)
+VARX_R1 <- EX2_R1 - (EX_R1)^2
+EX2_R2 <- sum(x2*f2)
+VARX_R2 <- EX2_R2 - (EX_R2)^2
+# tabela resumo
+tibble(
+  `Região` = paste0("R",1:2),
+  Média = c(EX_R1, EX_R2),
+  Variância = c(VARX_R1, VARX_R2),
+) %>% kable(caption = "Medidas Resumo.")
+```
+
+
+
 
 # Exercício 23
 
@@ -194,9 +278,6 @@ x %>%
   mutate(Dependentes=factor(Dependentes)) %>% 
   janitor::adorn_totals() %>% 
   kable()
-
-
-
 ```
 
 
@@ -221,20 +302,69 @@ Nenhuma das alternativas. De fato, a media é igual a 2.4 enquanto a mediana = 2
 ```{r}
 x <- x %>% 
   mutate(freq=`Frequência`/sum(`Frequência`))
-
 # média
 x %>% summarise(media = sum(Dependentes * freq)) %>% pull
-
 # mediana
 x <- x %>% mutate(freqacum = cumsum(freq))
 x %>% summarise(mediana = Dependentes[findInterval(0.5, freqacum)+1]) %>% pull
-
 # moda
 x %>% summarise(moda = Dependentes[which.max(freq)]) %>% pull
 ```
 
 
 # Exercício 28
+
+a)
+
+Temos que $W_i = X_i +k,\ i=1,...,n$, $k$ é uma constante e $\{X_i\}_{i=1,...,n}$ um conjunto de dados.
+
+Além disso,
+$$
+\bar{X} = \frac{1}{n} \sum_{i=1}^{n}{X_i}
+$$
+
+Então, calculemos a média $\bar{W}$ do conjunto $\{W_i\}_{i=1,...,n}$,
+$$
+\bar{W} = \frac{1}{n} \sum_{i=1}^{n}{W_i}
+= \frac{1}{n} \sum_{i=1}^{n}{(X_i+k)}\\
+= \frac{1}{n} \sum_{i=1}^{n}{X_i}+\frac{1}{n} \sum_{i=1}^{n}{k}\\
+= \bar{X}+k
+$$
+
+De forma similar, calculemos a variância amostral $S^2_W$ de $\{W_i\}_{i=1,...,n}$,
+
+$$
+S^2_W = \frac{1}{n-1} \sum_{i=1}^{n}{(W_i-\bar{W})^2}
+= \frac{1}{n-1} \sum_{i=1}^{n}{((X_i+k)-(\bar{X}+k))^2}
+= \frac{1}{n-1} \sum_{i=1}^{n}{(X_i-\bar{X})^2}
+= S^2_X
+$$
+onde $S^2_X$ é a variância amostral de $\{X_i\}_{i=1,...,n}$.
+
+
+b)
+
+Temos agora que $V_i = kX_i,\ i=1,...,n$, $k$ é uma constante e $\{X_i\}_{i=1,...,n}$ um conjunto de dados.
+
+
+Então, calculemos a média $\bar{V}$ do conjunto $\{V_i\}_{i=1,...,n}$,
+$$
+\bar{V} = \frac{1}{n} \sum_{i=1}^{n}{V_i}
+= \frac{1}{n} \sum_{i=1}^{n}{(kX_i)}
+= \frac{k}{n} \sum_{i=1}^{n}{X_i}
+= k\bar{X}
+$$
+
+De forma similar, calculemos a variância amostral $S^2_V$ de $\{V_i\}_{i=1,...,n}$,
+
+$$
+S^2_V = \frac{1}{n-1} \sum_{i=1}^{n}{(V_i-\bar{V})^2}
+= \frac{1}{n-1} \sum_{i=1}^{n}{((kX_i)-(k\bar{X}))^2}
+= \frac{k^2}{n-1} \sum_{i=1}^{n}{(X_i-\bar{X})^2}
+= k^2S^2_X
+$$
+onde $S^2_X$ é a variância amostral de $\{X_i\}_{i=1,...,n}$.
+
 
 
 
@@ -280,9 +410,127 @@ Com a finalidade de entender a diferença entre "desvio padrão" e "erro padrão
 
 a) Simule 10000 dados de uma distribuição normal com média 12 e desvio padrão 4. Construa o histograma correspondente, calcule a média e o desvio padrão amostrais e compare os valores obtidos com aqueles utilizados na geração dos dados.
 
+```{r}
+exercise_a <- function(mean1, sd1, n) {
+  
+  normal <- rnorm(n, mean1, sd1)
+  
+  hist(normal, freq=FALSE,
+    main=paste("Histograma de", n, "amostras da função normal"),
+    xlab="Valor da amostra",
+    ylab="Densidade",
+    xlim = c(-10, 40),
+    ylim = c(0, 0.3),
+    #breaks = 50
+  )
+  sd2 <- sd(normal)
+  mean2 <- mean(normal)
+  
+  print(paste("Média amostral:", mean2))
+  print(paste("Desvio padrão amostral:", sd2))
+  return(normal)
+}
+mean1 <- 12
+sd1 <- 4
+n <- 10000
+normal <- exercise_a(mean1, sd1, n)
+```
+
+A média e o desvio padrão amostrais se aproximam dos valores utilizados para gerar os dados, mas não são exatamente iguais. Isso pode ser explicado pelos valores amostrais serem aleatoriamente gerados.
+
 b) Simule 500 amostras de tamanho $n=4$ dessa população. Calcule a média amostral de cada amostra, construa o histograma dessas médias e estime o correspondente desvio padrão (que é o erro padrão da média).
+
+```{r}
+exercise_b <- function (normal, n_sample, n_per_sample) {
+  
+  samples <- replicate(n_sample, sample(normal, n_per_sample), simplify=FALSE)
+  means <- as.numeric(lapply(samples, mean))
+  hist(means, freq=FALSE,
+    main=paste("Histograma das médias de", n_sample, "amostras de tamanho", n_per_sample),
+    xlab="Valor da amostra",
+    ylab="Densidade",
+    xlim = c(-10, 40),
+    ylim = c(0, 1.2),
+    #breaks = 50
+  )
+  print(paste("Erro padrão da média:", sd(means)))
+  return(means)
+}
+n_sample = 500  
+n_per_sample = 4
+means <- exercise_b(normal, n_sample, n_per_sample)
+```
 
 c) Repita os passos a) e b) com amostras de tamanhos $n=9$ e $n=100$. Comente os resultados comparando-os com aqueles preconizados pela teoria.
 
+```{r}
+normal <- exercise_a(mean1, sd1, n)
+n_per_sample = 9
+means <- exercise_b(normal, n_sample, n_per_sample)
+n_per_sample = 100
+means <- exercise_b(normal, n_sample, n_per_sample)
+```
+Com o aumento do tamanho das amostras, a distribuição das médias se assemelhou a uma distribuição normal. O erro padrão da média diminuiu. Isso pode ser visualmente averiguado nos histogramas das médias, cujos valores ficam cada vez mais próximos do centro conforme n aumenta. Todos esses resultados são previstos em teoria.
+
 d) Repita os passos a) - c) simulando amostras de uma distribuição qui-quadrado com 3 graus de liberdade.
 
+Passo a)
+
+```{r}
+exercise_a <- function(degrees_of_freedom, n) {
+  chisq <- rchisq(n, degrees_of_freedom)
+  
+  hist(chisq, freq=FALSE,
+    main=paste("Histograma de", n, "amostras da distribuição qui-quadrado"),
+    xlab="Valor da amostra",
+    ylab="Densidade",
+    xlim = c(0, 30),
+    ylim = c(0, 0.3),
+    #breaks = 50
+  )
+  sd2 <- sd(chisq)
+  mean2 <- mean(chisq)
+  
+  print(paste("Média amostral:", mean2))
+  print(paste("Desvio padrão amostral:", sd2))
+  
+  return(chisq)
+}
+degrees_of_freedom <- 3
+n <- 10000
+chisq <- exercise_a(degrees_of_freedom, n)
+```
+Novamente, a média e o desvio padrão amostrais se aproximam dos valores utilizados para gerar os dados, mas não são exatamente iguais dado que os valores amostrais são aleatoriamente gerados.
+
+Passo b)
+
+```{r}
+exercise_b <- function (chisq, n_sample, n_per_sample) {
+  samples <- replicate(n_sample, sample(chisq, n_per_sample), simplify=FALSE)
+  means <- as.numeric(lapply(samples, mean))
+  hist(means, freq=FALSE,
+    main=paste("Histograma das médias de", n_sample, "amostras de tamanho", n_per_sample),
+    xlab="Média",
+    ylab="Densidade",
+    xlim = c(0, 30),
+    ylim = c(0, 2.0),
+    #breaks = 50
+  )
+  print(paste("Erro padrão da média:", sd(means)))
+  return(means)
+}
+n_sample = 500  
+n_per_sample = 4
+means <- exercise_b(chisq, n_sample, n_per_sample)
+```
+
+Passo c)
+
+```{r}
+chisq <- exercise_a(degrees_of_freedom, n)
+n_per_sample = 9
+means <- exercise_b(chisq, n_sample, n_per_sample)
+n_per_sample = 100
+means <- exercise_b(chisq, n_sample, n_per_sample)
+```
+Com o aumento do tamanho das amostras, a distribuição das médias se assemelhou a uma normal, mesmo quando as amostras são geradas a partir da distribuição qi-quadrado. Novamente, o erro padrão da média diminuiu. Isso pode ser visualmente averiguado nos histogramas das médias, cujos valores ficam cada vez mais próximos do centro conforme n aumenta. Todos esses resultados são previstos em teoria.
