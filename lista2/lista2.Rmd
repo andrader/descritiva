@@ -92,7 +92,15 @@ Tabela com a distribuição de frequência para a variável Hipertensão
 Tabela com a distribuição de frequência para a variável Diabete
 
 
-'''
+```{r, echo=FALSE}
+dados %>% select(Lesoes) %>% group_by(Lesoes) %>% 
+  summarise(`Freq. absoluta` = n()) %>% 
+  mutate(
+    `Freq. relativa` = `Freq. absoluta`/sum(`Freq. absoluta`)*100) %>% 
+  janitor::adorn_totals() %>% 
+  kable(caption="Tabela com a distribuição de frequência para a variável Lesões")
+```
+
 
 b)
 
@@ -118,8 +126,6 @@ histograma(Coltot) / bxplot(Coltot)
 histograma(HDL) / bxplot(HDL)
 
 histograma(LDL) / bxplot(LDL)
-
-histograma(Lesoes) / bxplot(Lesoes)
 
 ```
 
