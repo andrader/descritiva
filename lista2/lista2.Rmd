@@ -54,6 +54,7 @@ library(knitr)
 library(readxl)
 library(dplyr)
 source('src/helpers.R')
+library(patchwork)
 ```
 
 # Exercício 1
@@ -95,50 +96,31 @@ Tabela com a distribuição de frequência para a variável Diabete
 
 b)
 
-```{r, results='hold'}
+```{r, warning=FALSE, results='hold'}
 #Histograma
-
-#Altura
-hist(dados$Altura, breaks = 8, xlab = "Altura", ylab = "Frequência", 
-     main = "Histograma para a variável Altura")
-#Peso
-hist(dados$Peso, breaks = 8, xlab = "Peso", ylab = "Frequência", 
-     main = "Histograma para a variável Peso")
-#Coltot
-hist(dados$Coltot, breaks = 8, xlab = "Coltot", ylab = "Frequência", 
-     main = "Histograma para a variável Coltot")
-#HDL
-hist(dados$HDL, breaks = 8, xlab = "HDL", ylab = "Frequência", 
-     main = "Histograma para a variável HDL")
-#HA
-hist(dados$HA, breaks = 8, xlab = "HA", ylab = "Frequência", 
-     main = "Histograma para a variável HA")
-#LDL
-hist(dados$LDL, breaks = 8, xlab = "LDL", ylab = "Frequência", 
-     main = "Histograma para a variável LDL")
-
-#Lesões
-hist(dados$Lesoes, breaks = 8, xlab = "Lesões", ylab = "Frequência", 
-     main = "Histograma para a variável Lesões")
-```
-
-
-
-```{r, results='hold'}
+histograma <- function(var) {
+  ggplot(dados, aes({{ var }})) +
+  geom_histogram(bins=8, color='black', fill='#8ade5a',alpha=.5) + 
+  ylab('Frequência')
+}
 #Boxplot
+bxplot <- function(var){
+  ggplot(dados, aes(x={{ var }})) +
+  geom_boxplot(color='black', fill='#8ade5a',alpha=.5)
+}
 
-#Altura
-boxplot(dados$Altura, main = "Boxplot para a variável Altura")
-#Peso
-boxplot(dados$Peso, main = "Boxplot para a variável Peso")
-#Coltot
-boxplot(dados$Coltot, main = "Boxplot para a variável Coltot")
-#HDL
-boxplot(dados$HDL, main = "Boxplot para a variável HDL")
-#HA
-boxplot(dados$HA, main = "Boxplot para a variável HA")
-#Lesões
-boxplot(dados$Lesoes, main = "Boxplot para a variável Lesões")
+histograma(Altura) / bxplot(Altura)
+
+histograma(Peso) / bxplot(Peso)
+
+histograma(Coltot) / bxplot(Coltot)
+
+histograma(HDL) / bxplot(HDL)
+
+histograma(LDL) / bxplot(LDL)
+
+histograma(Lesoes) / bxplot(Lesoes)
+
 ```
 
 c)
