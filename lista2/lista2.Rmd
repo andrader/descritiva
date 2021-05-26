@@ -51,6 +51,8 @@ options(width = 60)
 knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
 library(tidyverse)
 library(knitr)
+library(readxl)
+library(dplyr)
 source('src/helpers.R')
 ```
 
@@ -58,18 +60,142 @@ source('src/helpers.R')
 
 O arquivo `rehabcardio` contém informações sobre um estudo de reabilitação de pacientes cardíacos. Elabore um relatório indicando possíveis inconsistências na matriz de dados e faça uma análise descritiva de todas as variáveis do estudo, construindo distribuições de frequências para as variáveis qualitativas e obtendo medidas resumo para as variáveis qualitativas.
 
+Não conseguimos acessar o dicionário de dados  [rehabcardio.doc](https://www.ime.usp.br/~jmsinger/MorettinSinger/rehabcardio.doc)
+
+```{r}
+dados <- readxl::read_excel("data/rehabcardio.xls")
+```
+
+A inconstência encontrada é que a data de coleta é muito anterior à data de nascimento dos indivíduos.
+
+a)
+
+| hipertensão | Freq. Observada | Freq. relativa |
+|:-----------:|:---------------:|----------------|
+| hispertenso |       210       |       3%       |
+| normotenso  |       159       |       55%      |
+| NA          |        11       |       42%      |
+| TOTAL       |       380       |      100%      |
+  
+Tabela com a distribuição de frequência para a variável Hipertensão
+
+
+
+
+|  Diabete | Freq. Observada | Freq. relativa |
+|:--------:|:---------------:|:--------------:|
+|  Ausente |        81       |       21%      |
+| Presente |       293       |       77%      |
+|    NA    |        6        |       2%       |
+|   TOTAL  |       380       |      100%      |
+
+Tabela com a distribuição de frequência para a variável Diabete
+
+
+'''
+
+b)
+
+```{r, results='hold'}
+#Histograma
+#Altura
+hist(dados$Altura, breaks = 8, xlab = "Altura", ylab = "Frequência", 
+     main = "Histograma para a variável Altura")
+#Peso
+hist(dados$Peso, breaks = 8, xlab = "Peso", ylab = "Frequência", 
+     main = "Histograma para a variável Peso")
+#Coltot
+hist(dados$Coltot, breaks = 8, xlab = "Coltot", ylab = "Frequência", 
+     main = "Histograma para a variável Coltot")
+#HDL
+hist(dados$HDL, breaks = 8, xlab = "HDL", ylab = "Frequência", 
+     main = "Histograma para a variável HDL")
+#HA
+hist(dados$HA, breaks = 8, xlab = "HA", ylab = "Frequência", 
+     main = "Histograma para a variável HA")
+#LDL
+hist(dados$LDL, breaks = 8, xlab = "LDL", ylab = "Frequência", 
+     main = "Histograma para a variável LDL")
+#Lesões
+hist(dados$Lesoes, breaks = 8, xlab = "Lesões", ylab = "Frequência", 
+     main = "Histograma para a variável Lesões")
+```
+
+
+
+```{r, results='hold'}
+#Boxplot
+#Altura
+boxplot(dados$Altura, main = "Boxplot para a variável Altura")
+#Peso
+boxplot(dados$Peso, main = "Boxplot para a variável Peso")
+#Coltot
+boxplot(dados$Coltot, main = "Boxplot para a variável Coltot")
+#HDL
+boxplot(dados$HDL, main = "Boxplot para a variável HDL")
+#HA
+boxplot(dados$HA, main = "Boxplot para a variável HA")
+#Lesões
+boxplot(dados$Lesoes, main = "Boxplot para a variável Lesões")
+```
+
+c)
+
+```{r, results='hold'}
+#Medidas de resumo
+#Altura
+summary(dados$Altura)
+#Peso
+summary(dados$Peso)
+#Coltot
+summary(dados$Coltot)
+#HDL
+summary(dados$HDL)
+#LDL
+summary(dados$LDL)
+#Lesões
+summary(dados$Lesoes)
+```
+
+d) 
+
+```{r, results='hold'}
+#QQ
+#Altura
+qqnorm(dados$Altura, xlab = "Altura")
+qqline(dados$Altura)
+#Peso
+qqnorm(dados$Peso, xlab = "Peso")
+qqline(dados$Peso)
+#Coltot
+qqnorm(dados$Coltot, xlab = "Coltot")
+qqline(dados$Coltot)
+#HDL
+qqnorm(dados$HDL, xlab = "HDL")
+qqline(dados$HDL)
+#LDL
+qqnorm(dados$LDL, xlab = "LDL")
+qqline(dados$LDL)
+#Lesões
+qqnorm(dados$Lesoes, xlab = "Lesões")
+qqline(dados$Lesoes)
+```
+
+
+Os gráficos de QQ plot normal indicam que a distribuição de todas as variáveis contínuas seguem uma distribuição normal, pois os ponto estão seguindo uma sequência da linha qq normal. 
+Exceto a variável "lesões", os pontos dela não seguem a linha qq normal.
+
+
 # Exercício 12
 
 Construa gráficos de quantis e de simetria para os dados de manchas solares disponíveis no arquivo `manchas`.
 
-'''{r}
+```{r, results='hold'}
 dados <- read_xlsx('data/manchas_editado.xlsx') 
 dados_num = dados$Número
-
 # Grafico de quantis
 qqnorm(dados_num)
 qqline(dados_num, col = 2,lwd=2,lty=2)
-
 # Grafico de Simetria
 dados_num_ord = sort(dados_num)
 q2 = quantile(dados_num_ord, probs=c(.50))
@@ -83,7 +209,7 @@ for (i in 1:((n+1)/2)){
 plot(u, v, pch=19, xlab="Dispersão inferior (ui)", ylab="Dispersão superior (vi)",col="darkblue",xlim=c(0,max(u)),ylim=c(0,max(v)))
 title("Gráfico de simetria para Manchas Solares.")
 abline(0,1)
-'''
+```
 
 # Exercício 14
 
@@ -120,8 +246,9 @@ tibble(
   Probabilidade = c(.1, .3, .5, .7, .9),
   Quantil = quantile(d, Probabilidade, type = 4)#type = 4 é interpolação como na p53 do livro
 ) %>% kable(caption = 'Quantis de Ordem.')
-
 ```
+
+
 
 <!-- \begin{table}[H] -->
 <!-- \centering -->
@@ -154,11 +281,53 @@ Os dados apresentados na Tabela \@ref(tab:table17) referem-se aos instantes nos 
 \label{tab:table17}
 \end{table}
 
+```{r, out.width="50%"}
+dados15 <- read_csv("data/dados15.csv", col_types = cols(estrada1 = col_time(format = "%H:%M"), 
+     estrada2 = col_time(format = "%H:%M"), 
+     diff1 = col_time(format = "%H:%M"), diff2 = col_time(format = "%H:%M")))
+```
+
 a) Construa um histograma para a distribuição de frequências dos instantes de chamados em cada uma das estradas.
+
+```{r, echo=FALSE, out.width="50%"}
+pl1 <- ggplot(dados15, aes(estrada1))
+pl2 <- ggplot(dados15, aes(estrada2))
+pl1 + geom_histogram(bins=8, color='black', fill='#8ade5a',alpha=.5) + xlab('Hora') + ylab('Frequência') + ggtitle('Histograma de chamadas da estrada 1')
+pl2 + geom_histogram(bins=8, color='black', fill='#cf2e3a',alpha=.5, na.rm=TRUE) + xlab('Hora') + ylab('Frequência') + ggtitle('Histograma de chamadas da estrada 2')
+```
 
 b) Calcule os intervalos de tempo entre as sucessivas chamadas e descreva-os, para cada uma das estradas, utilizando medidas resumo e gráficos do tipo boxplot. Existe alguma relação entre o tipo de estrada e o intervalo de tempo entre as chamadas?
 
+Os resumos e boxplot apresentam os valores de intervalo entre as chamadas de auxílio em minutos.
+
+```{r, out.width="50%"}
+diff1 <- as.numeric(dados15$diff1)/60
+diff2 <- as.numeric(dados15$diff2)/60
+summary(diff1)
+summary(diff2)
+boxplot(diff1, diff2)
+```
+
+Com isso em mente podemos observar que, apesar de termos máximos próximos, as médias e medianas nos apontam que é o tempo entre chamadas na estrada 2 é maior do que o da estrada 1. Isso pode indicar que a estrada 2 é de menor porte e com um fluxo menor de veículos, o que levaria a essa diferença. É importante notar também que a estrada 2 teve menos chamadas no total do que a estrada 1, reforçando a hipótese de ser uma estrada menos importante.
+
+Com o boxplot podemos observar que os intervalos de tempo na a estrada 1 estão muito mais concentrados no começo, indicando uma freqência mais alta de chamadas quando comparada com a estrada 2.
+
 c) Por intermédio de um gráfico do tipo QQ, verifique se a distribuicão da variável "Intervalo de tempo entre as chamadas" em cada estrada é compatível com um modelo normal. Faça o mesmo para um modelo exponencial. Compare as distribuições de frequências correspondentes às duas estradas.
+
+```{r, echo=FALSE, out.width="50%"}
+pl3 <- ggplot(dados15)
+pl3 + geom_qq(aes(sample=diff1), distribution=stats::qnorm, na.rm=TRUE) + geom_qq_line(aes(sample=diff1), distribution=stats::qnorm, na.rm=TRUE) + xlab('Dist. Normal') + ylab('Intervalo de tempo entre as chamadas') + ggtitle('QQ Normal 1')
+pl3 + geom_qq(aes(sample=diff1), distribution=stats::qexp, na.rm=TRUE) + geom_qq_line(aes(sample=diff1), distribution=stats::qexp, na.rm=TRUE) + xlab('Dist. Exponencial') + ylab('Intervalo de tempo entre as chamadas') + ggtitle('QQ Exponencial 1')
+```
+
+Podemos observar pelo gráfico acima que os intervalos entre chamadas da estrada 1 não são compatíveis com uma distribuição normal, uma vez que o respectivo gráfico QQ claramente apresenta um comportamento curvo, não se adequando a reta esperada. No caso da distribuição exponencial podemos observar o contrário, onde os dados se adequam bem a reta esperada, especialmente para valores mais baixos.
+
+```{r, echo=FALSE, out.width="50%"}
+pl3 + geom_qq(aes(sample=diff2), distribution=stats::qnorm, na.rm=TRUE) + geom_qq_line(aes(sample=diff2), distribution=stats::qnorm, na.rm=TRUE) + xlab('Dist. Normal') + ylab('Intervalo de tempo entre as chamadas') + ggtitle('QQ Normal 2')
+pl3 + geom_qq(aes(sample=diff2), distribution=stats::qexp, na.rm=TRUE) + geom_qq_line(aes(sample=diff2), distribution=stats::qexp, na.rm=TRUE) + xlab('Dist. Exponencial') + ylab('Intervalo de tempo entre as chamadas') + ggtitle('QQ Exponencial 2')
+```
+
+Para a estrada 2 podemos observar um comportamento bem parecido com o da estrada 1 acima, onde a distribuição não é compatível com uma distribuição normal, apressentando uma curva no gráfico QQ. E da mesma maneira temos uma boa compatibilidade com a função exponencial, com exceção ao último quartil, que apresenta um valor bem abaixo da reta.
 
 # Exercício 17
 
