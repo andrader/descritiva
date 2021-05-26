@@ -62,7 +62,7 @@ O arquivo `rehabcardio` contém informações sobre um estudo de reabilitação 
 
 Construa gráficos de quantis e de simetria para os dados de manchas solares disponíveis no arquivo `manchas`.
 
-'''{r}
+```{r}
 dados <- read_xlsx('data/manchas_editado.xlsx') 
 dados_num = dados$Número
 
@@ -83,7 +83,7 @@ for (i in 1:((n+1)/2)){
 plot(u, v, pch=19, xlab="Dispersão inferior (ui)", ylab="Dispersão superior (vi)",col="darkblue",xlim=c(0,max(u)),ylim=c(0,max(v)))
 title("Gráfico de simetria para Manchas Solares.")
 abline(0,1)
-'''
+```
 
 # Exercício 14
 
