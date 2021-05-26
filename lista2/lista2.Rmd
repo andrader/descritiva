@@ -52,6 +52,7 @@ knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
 library(tidyverse)
 library(knitr)
 library(readxl)
+library(dplyr)
 source('src/helpers.R')
 ```
 
@@ -59,11 +60,161 @@ source('src/helpers.R')
 
 O arquivo `rehabcardio` contém informações sobre um estudo de reabilitação de pacientes cardíacos. Elabore um relatório indicando possíveis inconsistências na matriz de dados e faça uma análise descritiva de todas as variáveis do estudo, construindo distribuições de frequências para as variáveis qualitativas e obtendo medidas resumo para as variáveis qualitativas.
 
+Não conseguimos acessar o dicionário de dados  [rehabcardio.doc](https://www.ime.usp.br/~jmsinger/MorettinSinger/rehabcardio.doc)
+
+```{r}
+dados <- readxl::read_excel("data/rehabcardio.xls")
+```
+
+A inconstência encontrada é que a data de coleta é muito anterior à data de nascimento dos indivíduos.
+
+a)
+
+Hipertensão | Freq observada | Freq relativa
+hispertenso |      210       |       3%
+normotenso  |      159       |       55%
+   NA       |      11        |       42%
+  TOTAL     |      380       |       100%
+  
+Tabela com a distribuição de frequência para a variável Hipertensão
+
+
+
+
+Diabete  |  Freq observada  |  Freq relativa
+Ausente  |        81        |        21%
+Presente |        293       |        77%
+  NA     |        6         |        2%
+ TOTAL   |        380       |        100%
+
+Tabela com a distribuição de frequência para a variável Diabete
+
+
+'''
+
+b)
+
+```{r, results='hold'}
+#Histograma
+
+#Altura
+hist(dados$Altura, breaks = 8, xlab = "Altura", ylab = "Frequência", 
+     main = "Histograma para a variável Altura")
+
+#Peso
+hist(dados$Peso, breaks = 8, xlab = "Peso", ylab = "Frequência", 
+     main = "Histograma para a variável Peso")
+
+#Coltot
+hist(dados$Coltot, breaks = 8, xlab = "Coltot", ylab = "Frequência", 
+     main = "Histograma para a variável Coltot")
+
+#HDL
+hist(dados$HDL, breaks = 8, xlab = "HDL", ylab = "Frequência", 
+     main = "Histograma para a variável HDL")
+
+#HA
+hist(dados$HA, breaks = 8, xlab = "HA", ylab = "Frequência", 
+     main = "Histograma para a variável HA")
+
+#LDL
+hist(dados$LDL, breaks = 8, xlab = "LDL", ylab = "Frequência", 
+     main = "Histograma para a variável LDL")
+
+#Lesões
+hist(dados$Lesoes, breaks = 8, xlab = "Lesões", ylab = "Frequência", 
+     main = "Histograma para a variável Lesões")
+```
+
+
+
+```{r, results='hold'}
+#Boxplot
+
+#Altura
+boxplot(dados$Altura, main = "Boxplot para a variável Altura")
+
+#Peso
+boxplot(dados$Peso, main = "Boxplot para a variável Peso")
+
+#Coltot
+boxplot(dados$Coltot, main = "Boxplot para a variável Coltot")
+
+#HDL
+boxplot(dados$HDL, main = "Boxplot para a variável HDL")
+
+#HA
+boxplot(dados$HA, main = "Boxplot para a variável HA")
+
+#Lesões
+boxplot(dados$Lesoes, main = "Boxplot para a variável Lesões")
+```
+
+c)
+
+```{r, results='hold'}
+#Medidas de resumo
+
+#Altura
+summary(dados$Altura)
+
+#Peso
+summary(dados$Peso)
+
+#Coltot
+summary(dados$Coltot)
+
+#HDL
+summary(dados$HDL)
+
+#LDL
+summary(dados$LDL)
+
+#Lesões
+summary(dados$Lesoes)
+```
+
+d) 
+
+```{r, results='hold'}
+#QQ
+
+#Altura
+qqnorm(dados$Altura, xlab = "Altura")
+qqline(dados$Altura)
+
+#Peso
+qqnorm(dados$Peso, xlab = "Peso")
+qqline(dados$Peso)
+
+
+#Coltot
+qqnorm(dados$Coltot, xlab = "Coltot")
+qqline(dados$Coltot)
+
+#HDL
+qqnorm(dados$HDL, xlab = "HDL")
+qqline(dados$HDL)
+
+#LDL
+qqnorm(dados$LDL, xlab = "LDL")
+qqline(dados$LDL)
+
+#Lesões
+qqnorm(dados$Lesoes, xlab = "Lesões")
+qqline(dados$Lesoes)
+```
+
+
+Os gráficos de QQ plot normal indicam que a distribuição de todas as variáveis contínuas seguem uma distribuição normal, pois os ponto estão seguindo uma sequência da linha qq normal. 
+Exceto a variável "lesões", os pontos dela não seguem a linha qq normal.
+
+
 # Exercício 12
 
 Construa gráficos de quantis e de simetria para os dados de manchas solares disponíveis no arquivo `manchas`.
 
-```{r}
+```{r, results='hold'}
 dados <- read_xlsx('data/manchas_editado.xlsx') 
 dados_num = dados$Número
 
