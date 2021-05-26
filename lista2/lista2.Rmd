@@ -70,22 +70,23 @@ A inconstência encontrada é que a data de coleta é muito anterior à data de 
 
 a)
 
-Hipertensão | Freq observada | Freq relativa
-hispertenso |      210       |       3%
-normotenso  |      159       |       55%
-   NA       |      11        |       42%
-  TOTAL     |      380       |       100%
+
+| hipertensão | Freq. Observada | Freq. relativa |
+|:-----------:|:---------------:|----------------|
+| hispertenso |       210       |       3%       |
+| normotenso  |       159       |       55%      |
+| NA          |        11       |       42%      |
+| TOTAL       |       380       |      100%      |
   
 Tabela com a distribuição de frequência para a variável Hipertensão
 
 
-
-
-Diabete  |  Freq observada  |  Freq relativa
-Ausente  |        81        |        21%
-Presente |        293       |        77%
-  NA     |        6         |        2%
- TOTAL   |        380       |        100%
+|  Diabete | Freq. Observada | Freq. relativa |
+|:--------:|:---------------:|:--------------:|
+|  Ausente |        81       |       21%      |
+| Presente |       293       |       77%      |
+|    NA    |        6        |       2%       |
+|   TOTAL  |       380       |      100%      |
 
 Tabela com a distribuição de frequência para a variável Diabete
 
@@ -100,23 +101,18 @@ b)
 #Altura
 hist(dados$Altura, breaks = 8, xlab = "Altura", ylab = "Frequência", 
      main = "Histograma para a variável Altura")
-
 #Peso
 hist(dados$Peso, breaks = 8, xlab = "Peso", ylab = "Frequência", 
      main = "Histograma para a variável Peso")
-
 #Coltot
 hist(dados$Coltot, breaks = 8, xlab = "Coltot", ylab = "Frequência", 
      main = "Histograma para a variável Coltot")
-
 #HDL
 hist(dados$HDL, breaks = 8, xlab = "HDL", ylab = "Frequência", 
      main = "Histograma para a variável HDL")
-
 #HA
 hist(dados$HA, breaks = 8, xlab = "HA", ylab = "Frequência", 
      main = "Histograma para a variável HA")
-
 #LDL
 hist(dados$LDL, breaks = 8, xlab = "LDL", ylab = "Frequência", 
      main = "Histograma para a variável LDL")
@@ -133,19 +129,14 @@ hist(dados$Lesoes, breaks = 8, xlab = "Lesões", ylab = "Frequência",
 
 #Altura
 boxplot(dados$Altura, main = "Boxplot para a variável Altura")
-
 #Peso
 boxplot(dados$Peso, main = "Boxplot para a variável Peso")
-
 #Coltot
 boxplot(dados$Coltot, main = "Boxplot para a variável Coltot")
-
 #HDL
 boxplot(dados$HDL, main = "Boxplot para a variável HDL")
-
 #HA
 boxplot(dados$HA, main = "Boxplot para a variável HA")
-
 #Lesões
 boxplot(dados$Lesoes, main = "Boxplot para a variável Lesões")
 ```
@@ -155,51 +146,30 @@ c)
 ```{r, results='hold'}
 #Medidas de resumo
 
-#Altura
-summary(dados$Altura)
-
-#Peso
-summary(dados$Peso)
-
-#Coltot
-summary(dados$Coltot)
-
-#HDL
-summary(dados$HDL)
-
-#LDL
-summary(dados$LDL)
-
-#Lesões
-summary(dados$Lesoes)
+dados %>% 
+  select(Altura, Peso, Coltot, HDL, LDL, Lesoes) %>% 
+  summary()
 ```
 
 d) 
 
 ```{r, results='hold'}
 #QQ
-
 #Altura
 qqnorm(dados$Altura, xlab = "Altura")
 qqline(dados$Altura)
-
 #Peso
 qqnorm(dados$Peso, xlab = "Peso")
 qqline(dados$Peso)
-
-
 #Coltot
 qqnorm(dados$Coltot, xlab = "Coltot")
 qqline(dados$Coltot)
-
 #HDL
 qqnorm(dados$HDL, xlab = "HDL")
 qqline(dados$HDL)
-
 #LDL
 qqnorm(dados$LDL, xlab = "LDL")
 qqline(dados$LDL)
-
 #Lesões
 qqnorm(dados$Lesoes, xlab = "Lesões")
 qqline(dados$Lesoes)
@@ -253,7 +223,6 @@ Na tabela abaixo estão indicadas as durações de 335 lâmpadas.
 a) Esboce o histograma correspondente.
 
 ```{r, echo=FALSE}
-
 v  = floor(runif(82, min=0, max=101))
 v1 = floor(runif(71, min=100, max=201))
 v2 = floor(runif(68, min=200, max=301))
@@ -266,12 +235,17 @@ hist(d, main = "Duração em horas de 335 lâmpadas", xlab="Horas",breaks = brk,
 ```
 
 b) Calcule os quantis de ordem p=0,1; 0,3; 0,5; 0,7 e 0,9
-```{r, echo=FALSE, results = FALSE}
+
+
+```{r, echo=FALSE}
 tibble(
   Probabilidade = c(.1, .3, .5, .7, .9),
   Quantil = quantile(d, Probabilidade, type = 4)#type = 4 é interpolação como na p53 do livro
 ) %>% kable(caption = 'Quantis de Ordem.')
 ```
+
+
+
 <!-- \begin{table}[H] -->
 <!-- \centering -->
 <!-- \begin{tabular}{|c|c|l|l|l|l|} -->
@@ -431,6 +405,7 @@ x<- c(10,12,14,16,18)
 # freqs absolutas
 Freq1<- c(6,4,1,4,6)
 Freq2<- c(4,4,5,4,4)
+
 # freqs relativas
 f1 <- Freq1/sum(Freq1)
 f2 <- Freq2/sum(Freq2)
@@ -477,9 +452,6 @@ x %>%
   mutate(Dependentes=factor(Dependentes)) %>% 
   janitor::adorn_totals() %>% 
   kable()
-
-
-
 ```
 
 
@@ -504,14 +476,11 @@ Nenhuma das alternativas. De fato, a media é igual a 2.4 enquanto a mediana = 2
 ```{r}
 x <- x %>% 
   mutate(freq=`Frequência`/sum(`Frequência`))
-
 # média
 x %>% summarise(media = sum(Dependentes * freq)) %>% pull
-
 # mediana
 x <- x %>% mutate(freqacum = cumsum(freq))
 x %>% summarise(mediana = Dependentes[findInterval(0.5, freqacum)+1]) %>% pull
-
 # moda
 x %>% summarise(moda = Dependentes[which.max(freq)]) %>% pull
 ```
@@ -633,14 +602,11 @@ exercise_a <- function(mean1, sd1, n) {
   
   print(paste("Média amostral:", mean2))
   print(paste("Desvio padrão amostral:", sd2))
-
   return(normal)
 }
-
 mean1 <- 12
 sd1 <- 4
 n <- 10000
-
 normal <- exercise_a(mean1, sd1, n)
 ```
 
