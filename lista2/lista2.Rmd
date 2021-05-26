@@ -51,6 +51,7 @@ options(width = 60)
 knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
 library(tidyverse)
 library(knitr)
+library(readxl)
 source('src/helpers.R')
 ```
 
@@ -151,11 +152,55 @@ Os dados apresentados na Tabela \@ref(tab:table17) referem-se aos instantes nos 
 \label{tab:table17}
 \end{table}
 
+```{r, out.width="50%"}
+dados15 <- read_csv("data/dados15.csv", col_types = cols(estrada1 = col_time(format = "%H:%M"), 
+     estrada2 = col_time(format = "%H:%M"), 
+     diff1 = col_time(format = "%H:%M"), diff2 = col_time(format = "%H:%M")))
+```
+
 a) Construa um histograma para a distribuição de frequências dos instantes de chamados em cada uma das estradas.
+
+```{r, echo=FALSE, out.width="50%"}
+pl1 <- ggplot(dados15, aes(estrada1))
+pl2 <- ggplot(dados15, aes(estrada2))
+
+pl1 + geom_histogram(bins=8, color='black', fill='#8ade5a',alpha=.5) + xlab('Hora') + ylab('Frequência') + ggtitle('Histograma de chamadas da estrada 1')
+pl2 + geom_histogram(bins=8, color='black', fill='#cf2e3a',alpha=.5, na.rm=TRUE) + xlab('Hora') + ylab('Frequência') + ggtitle('Histograma de chamadas da estrada 2')
+```
 
 b) Calcule os intervalos de tempo entre as sucessivas chamadas e descreva-os, para cada uma das estradas, utilizando medidas resumo e gráficos do tipo boxplot. Existe alguma relação entre o tipo de estrada e o intervalo de tempo entre as chamadas?
 
+Os resumos e boxplot apresentam os valores de intervalo entre as chamadas de auxílio em minutos.
+
+```{r, out.width="50%"}
+diff1 <- as.numeric(dados15$diff1)/60
+diff2 <- as.numeric(dados15$diff2)/60
+summary(diff1)
+summary(diff2)
+boxplot(diff1, diff2)
+```
+
+Com isso em mente podemos observar que, apesar de termos máximos próximos, as médias e medianas nos apontam que é o tempo entre chamadas na estrada 2 é maior do que o da estrada 1. Isso pode indicar que a estrada 2 é de menor porte e com um fluxo menor de veículos, o que levaria a essa diferença. É importante notar também que a estrada 2 teve menos chamadas no total do que a estrada 1, reforçando a hipótese de ser uma estrada menos importante.
+
+Com o boxplot podemos observar que os intervalos de tempo na a estrada 1 estão muito mais concentrados no começo, indicando uma freqência mais alta de chamadas quando comparada com a estrada 2.
+
 c) Por intermédio de um gráfico do tipo QQ, verifique se a distribuicão da variável "Intervalo de tempo entre as chamadas" em cada estrada é compatível com um modelo normal. Faça o mesmo para um modelo exponencial. Compare as distribuições de frequências correspondentes às duas estradas.
+
+```{r, echo=FALSE, out.width="50%"}
+pl3 <- ggplot(dados15)
+
+pl3 + geom_qq(aes(sample=diff1), distribution=stats::qnorm, na.rm=TRUE) + geom_qq_line(aes(sample=diff1), distribution=stats::qnorm, na.rm=TRUE) + xlab('Dist. Normal') + ylab('Intervalo de tempo entre as chamadas') + ggtitle('QQ Normal 1')
+pl3 + geom_qq(aes(sample=diff1), distribution=stats::qexp, na.rm=TRUE) + geom_qq_line(aes(sample=diff1), distribution=stats::qexp, na.rm=TRUE) + xlab('Dist. Exponencial') + ylab('Intervalo de tempo entre as chamadas') + ggtitle('QQ Exponencial 1')
+```
+
+Podemos observar pelo gráfico acima que os intervalos entre chamadas da estrada 1 não são compatíveis com uma distribuição normal, uma vez que o respectivo gráfico QQ claramente apresenta um comportamento curvo, não se adequando a reta esperada. No caso da distribuição exponencial podemos observar o contrário, onde os dados se adequam bem a reta esperada, especialmente para valores mais baixos.
+
+```{r, echo=FALSE, out.width="50%"}
+pl3 + geom_qq(aes(sample=diff2), distribution=stats::qnorm, na.rm=TRUE) + geom_qq_line(aes(sample=diff2), distribution=stats::qnorm, na.rm=TRUE) + xlab('Dist. Normal') + ylab('Intervalo de tempo entre as chamadas') + ggtitle('QQ Normal 2')
+pl3 + geom_qq(aes(sample=diff2), distribution=stats::qexp, na.rm=TRUE) + geom_qq_line(aes(sample=diff2), distribution=stats::qexp, na.rm=TRUE) + xlab('Dist. Exponencial') + ylab('Intervalo de tempo entre as chamadas') + ggtitle('QQ Exponencial 2')
+```
+
+Para a estrada 2 podemos observar um comportamento bem parecido com o da estrada 1 acima, onde a distribuição não é compatível com uma distribuição normal, apressentando uma curva no gráfico QQ. E da mesma maneira temos uma boa compatibilidade com a função exponencial, com exceção ao último quartil, que apresenta um valor bem abaixo da reta.
 
 # Exercício 17
 

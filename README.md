@@ -7,10 +7,10 @@ Listas de exercício da disciplina MAE0217 - Estatística Descritiva (2021) da U
 
 Exercícios do capítulo 3 de Morettin e Singer (versão maio 2021).
 - [ ] 1 - Rubens Kushimizo Xavier
-- [ ] 12 - Thamires 
+- [x] 12 - Thamires 
 - [x] 14 - Rafael
-- [ ] 15 - Rubens G
-- [ ] 17 - Natália 
+- [x] 15 - Rubens G
+- [x] 17 - Natália 
 - [x] 19 - Rubens Andrade
 - [x] 23 - Rafael
 - [x] 28 - Rubens Andrade
