@@ -1,0 +1,97 @@
+---
+title: "MAE0217 - Estatística Descritiva - Lista 3"
+author: |
+  | Natalia Hitomi Koza\thanks{Número USP: 10698432}
+  | Rafael Gonçalves Pereira da Silva\thanks{Número USP: 9009600}
+  | Ricardo Geraldes Tolesano\thanks{Número USP: 10734557}
+  | Rubens Kushimizo Rodrigues Xavier\thanks{Número USP: 8626718}
+  | Rubens Gomes Neto\thanks{Número USP: 9318484}
+  | Rubens Santos Andrade Filho\thanks{Número USP: 10370336}
+  | Thamires dos Santos Matos\thanks{Número USP: 9402940}
+date: "`r stringr::str_to_sentence(format(Sys.time(), '%B de %Y'))`"
+lang: pt-BR
+header-includes:
+  # - \usepackage[brazilian]{babel}
+  - \usepackage{float}
+  - \usepackage{amsmath}
+  - \usepackage{amsthm}
+  - \floatplacement{figure}{H}
+  - \usepackage{indentfirst}
+  - \setlength{\parindent}{4em}
+  - \setlength{\parskip}{1em}
+  - \usepackage{booktabs}
+  - \usepackage{dcolumn}
+  - \usepackage{bm}
+  - \usepackage{titling}
+  - \thanksmarkseries{arabic} % \thanks footnotes com numeros
+  - \usepackage[bottom]{footmisc} % corrige posição footnotes
+  - \usepackage{pdfpages}
+  - \usepackage{tocloft}
+  - \renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+  - \usepackage{amssymb}
+  - \renewcommand\qedsymbol{$\blacksquare$}
+  - \usepackage{pdfpages}
+  - \usepackage{cleveref}
+  - \usepackage{threeparttable}
+output: 
+  # pdf_document:
+  bookdown::pdf_document2:
+    fig_caption: yes
+    number_sections: no
+    toc: true
+    toc_depth: 2
+editor_options: 
+  chunk_output_type: console
+---
+
+\pagebreak
+
+```{r setup, include=FALSE}
+options(width = 60)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+library(tidyverse)
+library(knitr)
+library(readxl)
+library(dplyr)
+source('src/helpers.R')
+library(patchwork)
+```
+
+
+# Captítulo 4
+
+## Exercício 6
+
+
+## Exercício 10
+
+
+## Exercício 11
+
+
+## Exercício 12
+
+
+## Exercício 13
+
+
+## Exercício 25
+
+
+
+# Capítulo 5
+
+## Exercício 1
+
+
+## Exercício 5
+
+
+## Exercício 9
+
+
+## Exercício 10
+
+
+## Exercício 12
+
