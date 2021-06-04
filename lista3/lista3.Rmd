@@ -67,9 +67,39 @@ library(patchwork)
 
 
 ## Exercício 11
+Seja $\pi_{a}$ porcentagem de desistentes do plano de TV da cidade A e
+$\pi_{b}$ a porcentagem da cidade B.
+Temos que:
+
+\[r_{c} = \frac{\pi_{a}} { ( 1-\pi_{a}) } / \frac{\pi_{b} } {(1-\pi_{b})} \]  \
+
+\[r_{c} = \frac{0.14} { 0.86  } / \frac{0.06} {0.94}  \] \\
+\begin{center}
+
+\(r_{c} = \cfrac{0.1316} { 0.0516 } = 2.55  \)
+\end{center}
+Portanto a resposta correta é a alternativa b) $r_c = 2.55$.
+
 
 
 ## Exercício 12
+
+A razão de chances calcula a associação entre eventos, comparando a chance de um evento em
+diferentes grupos, não a probabilidade do evento entre os grupos. Para o enunciado:
+
+\[\omega = \frac{p_{1}} { ( 1-p_{1} ) } / \frac{p_{2}} {(1-p_{2})}  \]  \
+
+\begin{center}
+Se $p_{1} = 2p_{2}$ \\
+\end{center}
+
+\[\omega = \frac{2p_{2}} { ( 1-2p_{2} ) } / \frac{p_{2}} {(1-p_{2})}  \] \\
+\begin{center}
+
+\(\omega = \cfrac{2(1-p_{2})} { ( 1-2p_{2} ) } \neq 2  \) para $p_{2} = 0$ 
+\end{center}
+
+Logo, temos que razão de chance igual a 2.0 não indica que a probabilidade de um grupo é 2 vezes a do outro.
 
 
 ## Exercício 13
@@ -82,6 +112,57 @@ library(patchwork)
 # Capítulo 5
 
 ## Exercício 1
+a) Construa um gráfico de dispersão simbolico para avaliar a relação entre as variáveis 
+altfac, proffac e grupo e comente os resultados.
+
+
+```{r, echo=FALSE , fig.width=8,fig.height=5}
+#altfac, proffac e grupo
+
+library(ggplot2)
+library(readxl)
+tipofacial <- read_excel("data/tipofacial.xls")
+ggplot(tipofacial , aes(altfac , proffac ), grupo) + 
+    geom_point( aes(shape = grupo, color = grupo) , size = 3)+ theme_bw() + 
+    scale_color_manual( values = c("red", "blue" , "green")) +
+    theme(axis.title = element_text(size=13)) +
+    theme(legend.position="bottom", legend.direction="horizontal",
+    legend.text=element_text(size=10)) +
+    theme(axis.text.x = element_text(face="plain", size=13),
+    axis.text.y = element_text(face="plain", size=13))
+```
+
+
+
+O gráfico parece evidenciar que os rostos com altura facial alta parecem  ter
+menor profundidade e podem ser classificados com o biotipo
+facial Braquifacial, assim como  aqueles que possuem maior profundidade facial
+tendem a ter menor altura facial, logo podem ser caracterizados com o biotipo dolicofacial
+enquanto que aqueles com altura facial proxima de zero apresentam profundidade facial semelhante, portanto apresentam biotipo mesofacial.
+
+
+
+
+b) Construa um gráfico do desenhista para avaliar a relação entre as variáveis nsba, ns, sba
+e comente os resultados
+
+```{r, echo=FALSE}
+library(ggplot2)
+
+panel.cor <- function(x, y, digits = 2, cex.cor, ...){
+      usr <- par("usr"); on.exit(par(usr))
+      par(usr = c(0, 1, 0, 1))
+      # correlation coefficient
+      r <- cor(x, y)
+      txt <- format(c(r, 0.123456789), digits = digits)[1]
+      txt <- paste("r= ", txt, sep = "")
+    text(0.5, 0.5, txt, cex=1.8)}
+pairs(~nsba + ns + sba, data=tipofacial, upper.panel=panel.cor, lower.panel = panel.smooth)
+
+```
+
+Observa se uma associação positiva entre ns e sba, enquanto nsba parece
+apresentar nenhuma associação tanto com ns como sba.
 
 
 ## Exercício 5
