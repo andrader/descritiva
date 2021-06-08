@@ -65,6 +65,40 @@ library(patchwork)
 
 ## Exercício 10
 
+Consideraremos que o estudo realizado se trata de um estudo prospectivo, já que a radiação foi emitida de forma proposital para posteriormente avaliar a presença de micronúcleos nas células. O fator de risco é a dose de radiação, e a variável resposta é o número de células que possuem múltiplos micronúcleos. Portanto, tomaremos o p1 como a probabilidade de uma célula possuir múltiplos micronúcleos dada uma dose específica de radiação. p0 corresponde à probabilidade de uma célula possuir múltiplos micronúcleos para uma dose nula de radiação.
+
+```{r, results='asis'}
+library(pander)
+celulas <- read_excel('data/numero_celulas.xlsx')
+row0 <- celulas[1, ]
+p0 <- row0$freq_celula_micronucleos / row0$n_celulas_examinadas
+chance0 <- p0 / (1 - p0)
+
+f <- function(row) {
+  p1 <- row[2] / row[3]
+  risco_relativo <- p1 / p0 
+  
+  chance1 <- p1 / (1 - p1)
+  razao_de_chance <- chance1 / chance0
+    
+  return(c(risco_relativo, razao_de_chance, p1))
+}
+risk <- apply(celulas, 1, f)
+celulas$p1 <- risk[3, ]
+celulas$risco_relativo <- risk[1, ]
+celulas$razao_de_chance <- risk[2, ]
+pandoc.table(celulas, split.table=500, caption="Risco relativo e razão de chances em relação à dose nula para os dados do exercício 10", round=2, col.names = c("Dose de radiação gama (cGy)",
+                             "Frequência de células com múltiplos micronúcleos",
+                             "Total de células examinadas",
+                             "p1",
+                             "Frequência relativa",
+                             "Razão de chances"
+                             ))
+```
+
+A tabela acima demonstra que tanto o risco relativo quanto a razão de chances aumentam consideravelmente conforme a dose de radiação aumenta. O aumento de 200 para 400 foi muito maior que o aumento de 100 para 200, indicando que doses diferentes de radiação podem ter impactos diferentes.
+
+Os riscos relativos se aproximam de suas respectivas razões de chance, principalmente para valores menores de p1. Esse resultado é previsto pela teoria.
 
 ## Exercício 11
 Seja $\pi_{a}$ porcentagem de desistentes do plano de TV da cidade A e
@@ -170,6 +204,33 @@ apresentar nenhuma associação tanto com ns como sba.
 
 ## Exercício 9
 
+```{r, results='asis'}
+library(pander)
+
+arvores <- read_excel("data/arvores.xls")
+lista_elementos <- c('Mn', 'Fe', 'Cu', 'Zn', 'Sr', 'Ba', 'Mg', 'Al', 'P', 'S', 'Cl', 'Ca')
+especies <- unique(arvores$especie)
+tipovias <- unique(arvores$tipovia)
+combinacoes <- data.frame(expand.grid(especie=especies, tipovia=tipovias, stringsAsFactors = FALSE))
+
+analisa <- function(combinacao) {
+  #especie <- combinacao[1]
+  #tipovia <- combinacao[2]
+  filtrado <- filter(arvores, especie == combinacao[1], tipovia == combinacao[2])
+  elementos <- select(filtrado, all_of(lista_elementos))
+  means <- colMeans(elementos)
+  covariance <- cov(elementos)
+  correlation <- cor(elementos)
+  
+  pandoc.table(means, caption=paste("Vetor de médias dos elementos para espécie", combinacao[1], "e tipovia", combinacao[2]))
+  pandoc.table(covariance, caption=paste("Matriz de covariância dos elementos para espécie", combinacao[1], "e tipovia", combinacao[2]))
+  pandoc.table(correlation, caption=paste("Matriz de correlação dos elementos para espécie", combinacao[1], "e tipovia", combinacao[2]))
+  
+  return(list(means, covariance, correlation))
+}
+
+result <- apply(combinacoes, 1, analisa)
+```
 
 ## Exercício 10
 
