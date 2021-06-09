@@ -20,6 +20,8 @@ header-includes:
   - \setlength{\parindent}{4em}
   - \setlength{\parskip}{1em}
   - \usepackage{booktabs}
+  - \usepackage{multirow}
+  - \usepackage{enumerate}
   - \usepackage{dcolumn}
   - \usepackage{bm}
   - \usepackage{titling}
@@ -236,4 +238,80 @@ result <- apply(combinacoes, 1, analisa)
 
 
 ## Exercício 12
+
+\begin{enumerate}[a)]
+
+\item Calculando a razão de chances para cada estrato: (os valores estão com 3 casas decimais de precisão)
+
+\begin{itemize}
+\item Ciências Químicas: $rc = \frac{8 \cdot 13}{11 \cdot 11} \approx 0,8595$
+\item Ciências Farmacêuticas: $rc = \frac{10 \cdot 9}{14 \cdot 13} \approx 0,4945$
+\item Ciências Biológicas: $rc = \frac{19 \cdot 18}{25 \cdot 20} \approx 0,6840$
+\item Bioquímica: $rc = \frac{14 \cdot 4}{2 \cdot 12} \approx 2,3334$
+\end{itemize}
+
+\begin{table}[!h]
+\centering
+\caption{Frequência de aprovação e reprovação com razão de chance}
+\begin{tabular}{ccccc}
+\hline
+ &  & \multicolumn{2}{c}{Desempenho}\\
+\cline{3-4}
+Curso & Professor & Aprovado & Reprovado & Razão de chances\\
+\hline
+\multirow{2}*{Ciências Químicas} & A & 8 & 11 & \multirow{2}*{0,8595}\\
+& B & 11 & 13 & \\
+\hline
+\multirow{2}*{Ciências Farmacêuticas} & A & 10 & 14 & \multirow{2}*{0,4945}\\
+& B & 13 & 9 & \\
+\hline
+\multirow{2}*{Ciências Biológicas} & A & 19 & 25 & \multirow{2}*{0,6840}\\
+& B & 20 & 18 &\\
+\hline
+\multirow{2}*{Bioquímica} & A & 14 & 2 & \multirow{2}*{2,3334}\\
+& B & 12 & 4 &\\
+\hline
+\end{tabular}
+\end{table}
+
+\item Calculando a razão de chances de Mantel-Haenszel: (três casas decimais de precisão)
+
+\begin{equation*}
+rc_{MH} = \frac{\frac{8 \cdot 24}{43}+\frac{10 \cdot 22}{46}+\frac{19 \cdot 38}{82}+\frac{14 \cdot 16}{32}}{\frac{11 \cdot 19}{43}+\frac{13 \cdot 24}{46}+\frac{20 \cdot 44}{82}+\frac{12 \cdot 16}{32}} \approx 0,8829 
+\end{equation*}
+
+\begin{table}[!h]
+\centering
+\caption{Frequência de aprovação e reprovação com total}
+\begin{tabular}{ccccc}
+\hline
+ &  & \multicolumn{2}{c}{Desempenho} & \\
+\cline{3-4}
+Curso & Professor & Aprovado & Reprovado & Total\\
+\hline
+\multirow{2}*{Ciências Químicas} & A & 8 & 11 & 19\\
+& B & 11 & 13 & 24\\
+\cline{5-5}
+& & & & 43\\
+\hline
+\multirow{2}*{Ciências Farmacêuticas} & A & 10 & 14 & 24\\
+& B & 13 & 9 & 22\\
+\cline{5-5}
+& & & & 46\\
+\hline
+\multirow{2}*{Ciências Biológicas} & A & 19 & 25 & 44 \\
+& B & 20 & 18 & 38\\
+\cline{5-5}
+& & & & 82\\
+\hline
+\multirow{2}*{Bioquímica} & A & 14 & 2 & 16\\
+& B & 12 & 4 & 16\\
+\cline{5-5}
+& & & & 32\\
+\hline
+\end{tabular}
+\end{table}
+
+\item A conclusão que chegamos é de que é mais provável ser aprovado com o professor B, tendo apenas uma excessão que é no curso de bioquímica, onde o professor A apresentou uma taxa de aprovação melhor do que B, mas também nesse curso vemos que a taxa de aprovação de ambos professores é bastante superior aos demais cursos. 
+\end{enumerate}
 
