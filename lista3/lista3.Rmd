@@ -57,12 +57,172 @@ library(readxl)
 library(dplyr)
 source('src/helpers.R')
 library(patchwork)
+
+library(ggplot2)
+library(qqplotr)
+
+library(RVAideMemoire)
+library(psych)
+library(car)
+library(corrplot)
+
+library(states)
 ```
 
 
 # Captítulo 4
 
 ## Exercício 6
+
+
+a)
+
+```{r}
+
+tabela = read.csv("data/coronarias(1).csv", sep = ";", h=T, dec=",")
+
+tabela$SEXO <- factor(tabela$SEXO, label = c("M", "F"), levels = c(0,1))
+col <- na.omit(tabela$COL)
+tabela$COL[tabela$COL== '.'] <- NA
+col <- na.omit(tabela$COL)
+ccol <- as.numeric(col)
+
+
+qqnorm(ccol, main = 'QQplot COL')
+qqline(ccol)
+
+
+#tirando os NAs
+tabela$IMC[tabela$IMC== '.'] <- NA
+
+# complete.cases(tabela$IMC)
+# which(complete.cases(tabela$IMC))
+# which(!complete.cases(tabela$IMC))
+
+imc <- which(!complete.cases(tabela$IMC))
+imc <- which(complete.cases(tabela$IMC))
+
+#mundando a variável de inteiro para numérico
+imcc <- as.numeric(imc)
+#class(imcc)
+summary(imcc)
+describe(imcc)
+
+qqnorm(imcc)
+qqline(imcc)
+```
+
+
+
+
+b)
+
+```{r}
+
+apt = read.csv("data/coron.csv", sep = ";", h=T, dec=",")
+
+
+apt[apt == '.'] <- NA
+
+# complete.cases(apt)
+# which(complete.cases(apt))
+# which(!complete.cases(apt))
+
+
+na_apt <- which(complete.cases(apt))
+na_apt <- which(!complete.cases(apt))
+
+apt_sem_na <- apt[- na_apt, ]
+
+
+altura <- as.numeric(apt_sem_na$ALTURA.cm.)
+#class(altura)
+
+peso <- as.numeric(apt_sem_na$PESO.kg.)
+#class(peso)
+
+# Pelo gráfico de boxplot, as variáveis Altura e Peso apresentam outliers
+boxplot(altura)
+boxplot(peso)
+
+
+# Pelo teste de Shapiro-Wilk, as variáveis Altura e Peso não apresentam distribuição normal
+shapiro.test(altura)
+qqnorm(altura, main = "Altura")
+qqline(altura)
+
+shapiro.test(peso)
+qqnorm(peso, main = "Peso")
+qqline(peso)
+# Relação lineae entre as variáveis Altura e Peso
+plot(peso, altura)
+
+
+# Verificando valores previstos e resíduos
+mod_reg <- lm(altura ~ peso, apt_sem_na)
+
+par(mfrow=c(1,2))
+plot(mod_reg, which=c(1,3))
+par(mfrow =c(1,1))
+
+# Correlação linear de Pearson
+cor.test(peso, altura, method = "pearson")
+
+# Correlação de Spearman
+cor.test(peso, altura, method = "spearman")
+
+```
+
+
+
+c)
+
+```{r}
+
+ctg = read.csv2("data/contig.csv", sep = ";", h=T, dec=",", )
+
+glimpse(ctg)
+
+ctg[ctg== '.'] <- NA
+
+# complete.cases(ctg)
+# which(complete.cases(ctg))
+# which(!complete.cases(ctg))
+
+na_ctg <- which(complete.cases(ctg))
+na_ctg <- which(!complete.cases(ctg))
+
+ctg_sem_na <- ctg[- na_ctg, ]
+
+
+ctg_sem_na$ARTER <- factor(ctg_sem_na$ARTER, label = c("NENHUMA", "CAROT", "AORT", "CAROT+AORT"), levels = c(0,1,2,3))
+
+ctg_sem_na$TABAG <- factor(ctg_sem_na$TABAG, label = c("SIM", "NÂO"), levels = c(0,1))
+
+table(ctg_sem_na$TABAG, ctg_sem_na$ARTER)
+
+
+#Tabela de contigência TABAG  e ARTER
+tabe <- table(ctg_sem_na$TABAG, ctg_sem_na$ARTER)
+
+
+
+#Teste Qui Quadrado de Pearson
+quiqua2 <- chisq.test(tabe)
+
+
+#Qui Quadrado esperado
+quiqua2$expected
+
+#Coeficiente de contigência de Pearson
+sqrt((4.878)/(4.878+1352))
+
+#Coeficiente de contigência de Tschuprov
+sqrt((4.878/1352)/sqrt(3))
+```
+
+
+
 
 
 ## Exercício 10
@@ -138,7 +298,415 @@ Se $p_{1} = 2p_{2}$ \\
 Logo, temos que razão de chance igual a 2.0 não indica que a probabilidade de um grupo é 2 vezes a do outro.
 
 
+
+
 ## Exercício 13
+
+```{r}
+sman = read.csv2("data/smansoni -.csv", sep = ";", h=T, dec=",", )
+
+#Smansoni negativo
+
+elied1 <- factor(sman$ELIEDA1, label = c("NÃO", "SIM"), levels = c(0,1))
+elied2 <- factor(sman$ELIEDA2, label = c("NÃO", "SIM"), levels = c(0,1))
+ha <- factor(sman$HA, label = c("NÃO", "SIM"), levels = c(0,1))
+iff <- factor(sman$IF, label = c("NÃO", "SIM"), levels = c(0,1))
+ied <- factor(sman$IED, label = c("NÃO", "SIM"), levels = c(0,1))
+
+#Tabela HA e Elieda
+table(ha, elied1)
+
+chisq.test(table(ha, elied1))
+
+# Sensibilidade
+32/48
+
+# Especificidade
+1/2
+
+#Falso positivo
+1/2
+
+#Falso negativo
+16/48
+
+#Valor preditivo positivo
+32/33
+
+#Valor preditivo negativo
+1/17
+
+# Acurácia
+(32+1)/50
+
+
+
+
+#Table IF e Elieda1
+table(iff, elied1)
+
+chisq.test(table(iff, elied1))
+
+# Sensibilidade
+32/48
+
+# Especificidade
+1/2
+
+#Falso positivo
+1/2
+
+#Falso negativo
+16/48
+
+#Valor preditivo positivo
+32/33
+
+#Valor preditivo negativo
+1/17
+
+# Acurácia
+(32+1)/50
+
+
+#Tabela ed e elieda1
+table(ied, elied1)
+
+chisq.test(table(ied, elied1))
+
+#Sensibilidade
+33/48
+
+#Especificidade
+2/2
+
+#Falso positivo
+0
+
+#Valor Pditivo positivo
+33/33
+
+#Valor preditivo negativo
+2/17
+
+#Acurácia
+(33+2)/50
+
+
+
+#Tabela IF e elieda2
+table(ha, elied2)
+
+chisq.test(table(ha, elied2))
+
+#Sensibilidade
+44/48
+
+#especificidade
+1/2
+
+#Falso poditivo
+1/2
+
+# falso negativo
+4/48
+
+#acurácia
+(44+1)/50
+
+
+#tabela if e elieda2
+table(iff, elied2)
+
+chisq.test(table(iff, elied2))
+
+#sensibilidade
+43/48
+
+#especifidade
+0/2
+
+#Falso positivo
+2/2
+
+#falso negativo
+0/2
+
+#valor preditivo positivo
+43/45
+
+#valor preditivo negativo
+0/5
+
+#acurácia
+43/50
+
+
+#tabela de ied e elieda2
+
+table(ied, elied2)
+
+chisq.test(table(ied, elied2))
+
+#sensibilidade
+44/48
+
+#especificidade
+1/2
+
+#falso positivo
+1/2
+
+#falso negativvo
+4/48
+
+#valor ppreditivo positivo
+44/45
+
+#valor preditivo negativo
+1/5
+
+#acurácia
+45/50
+
+
+
+#Tabela elieda1 e elieda2
+table(elied1, elied2)
+
+chisq.test(table(elied1, elied2))
+
+#Sensibiliddade
+33/33
+
+#Especificidade
+5/17
+
+#Falso positivo
+12/17
+
+#Falso negativo
+0/33
+
+# Valor preditivo positivo
+33/45
+
+#valor preditivo negativo
+5/5
+
+#Acurácia
+0.733
+
+
+
+
+
+sman1 = read.csv2("data/smansoni +.csv", sep = ";", h=T, dec=",", )
+
+#Smasoni positivo
+
+
+elied_1 <- factor(sman1$ELIEDA1, label = c("NÃO", "SIM"), levels = c(0,1))
+elied_2 <- factor(sman1$ELIEDA2, label = c("NÃO", "SIM"), levels = c(0,1))
+ha_ <- factor(sman1$HA, label = c("NÃO", "SIM"), levels = c(0,1))
+iff_ <- factor(sman1$IF, label = c("NÃO", "SIM"), levels = c(0,1))
+ied_ <- factor(sman1$IED, label = c("NÃO", "SIM"), levels = c(0,1))
+
+#Tabela ha e elieda1
+table(ha_, elied_1)
+
+chisq.test(table(ha_, elied_1), correct = F)
+
+#sensibilidade
+2/11
+
+#especificidade
+37/39
+
+#falso positivo
+2/39
+
+#falso negativo
+9/11
+
+#valor preditivo positivo
+2/4
+
+#valor preditivo negativo
+37/46
+
+#acurácia
+39/50
+
+
+#tabela if e eliada
+table(iff_, elied_1)
+
+chisq.test(table(iff_, elied_1))
+
+#sensibilidade
+2/2
+
+#especificidade
+46/48
+
+#falso positivo
+2/48
+
+#falso negtivo
+0/2
+
+#valor preditivo positivo
+2/4
+
+# valor preditivo negativo
+46/46
+
+#acuráciaa
+48/50
+
+
+#tabela ied e elieda11
+table(ied_, elied_1)
+
+chisq.test(table(ied_, elied_1))
+
+#sensibilidade
+4/33
+
+#especificidade
+33/33
+
+#falso positivo
+0/33
+
+#falso negativo
+13/17
+
+#valor preditivo positivo
+4/4
+
+#valor preditivo negativo
+33/46
+
+#acurácia
+37/50
+
+
+#tabela elieda1 e elieda2
+table(elied_1, elied_2)
+
+chisq.test(table(ied_, elied_1))
+
+#sensibilidade
+4/4
+
+#especificidade
+44/46
+
+#falso poitivo
+2/46
+
+#falso negativo
+0/4
+
+#valor preditivo positivo
+4/6
+
+#valor preditivo negativo
+44/44
+
+#acurácia
+48/50
+
+
+
+#tabela ha e eliada2
+table(ha_, elied_2)
+
+chisq.test(table(ha_, elied_2))
+
+
+#sensibilidade
+2/11
+
+#especificidade
+35/39
+
+#falso positivo
+4/39
+
+#falso negativo
+9/11
+
+#valor preditivo positivo
+4/6
+
+#valor preditivo negativo
+9/44
+
+#acurácia
+37/50
+
+
+#tabela if e elieda2
+table(iff_, elied_2)
+
+chisq.test(table(iff_, elied_2))
+
+
+#sensibilidade
+2/2
+
+#especificidade
+0/2
+
+#falso positivo
+4/48
+
+#falso negativo
+0/2
+
+#valor preditivo positivo
+2/6
+
+#valor preditivo negativo
+2/6
+
+#valor preditivo negativo
+0/44
+
+#acurácia
+46/50
+
+
+#tabela ied e elieda2
+table(ied_, elied_2)
+
+chisq.test(table(ied_, elied_2))
+
+
+#sensibilidade
+5/17
+
+#especificidade
+32/33
+
+#falso positivo
+1/33
+
+#falso negativo
+12/17
+
+#valor preditivo positivo
+5/6
+
+#valor preditivo negativo
+32/44
+
+#acurácia
+37/50
+```
 
 
 ## Exercício 25
