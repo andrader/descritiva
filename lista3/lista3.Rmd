@@ -47,6 +47,8 @@ editor_options:
 ---
 
 \newcommand{\var}{\operatorname{Var}}
+\newcommand{\pr}{\operatorname{\mathbb{P}}}
+
 
 \pagebreak
 
@@ -836,79 +838,149 @@ result <- apply(combinacoes, 1, analisa)
 
 ## Exercício 12
 
-\begin{enumerate}[a)]
+Os dados abaixo reportam-se a uma avaliação do desempenho de um conjunto de 203 estudantes universitários em uma disciplina introdutória de Álgebra e Cálculo. Os estudantes, agrupados segundo os quatro cursos em que estavam matriculados, foram ainda aleatoriamente divididos em dois grupos por curso, a cada um dos quais foi atribuído um de dois professores que lecionaram a mesma matéria. O desempenho de cada aluno foi avaliado por meio da mesma prova.
+ 
+\begin{table}[ht]
+\caption{Frequências de aprovação/reprovação de estudantes.}
+\centering
+\begin{tabular}{cccc}
+\hline & & \multicolumn{2}{c} { Desempenho } \\
+\cline { 3 - 4 } Curso & Professor & Aprovado & Reprovado \\
+\hline Ciências Químicas & A & 8 & 11 \\
+& B & 11 & 13 \\
+\hline Ciências Farmacêuticas & A & 10 & 14 \\
+& B & 13 & 9 \\
+\hline Ciências Biológicas & A & 19 & 25 \\
+& B & 20 & 18 \\
+\hline Bioquímica & A & 14 & 2 \\
+& B & 12 & 4 \\
+\hline
+\end{tabular}
+\end{table}
 
-\item Calculando a razão de chances para cada estrato: (os valores estão com 3 casas decimais de precisão)
+```{r, echo=FALSE}
+dados <- tibble::tribble(
+  ~Curso, ~Professor, ~Aprovado, ~Reprovado,
+  "Ciências Químicas", "A", 8 ,11,
+  "Ciências Químicas","B" ,11 ,13,
+  "Ciências Farmacêuticas","A" ,10 ,14,
+  "Ciências Farmacêuticas","B", 13, 9,
+  "Ciências Biológicas","A" ,19 ,25,
+  "Ciências Biológicas","B" ,20 ,18,
+  "Bioquímica","A", 14, 2,
+  "Bioquímica","B", 12, 4,
+)
+```
+
+a) Para valiar a associação entre Professor e Desempenho, calcule a razão de chances em cada estrato.
+
+Para o estrato "Ciências Químicas" temos que a razão de chances é
+
+```{r, echo=FALSE}
+# Ciências Químicas
+rc1 = (8*13)/(11*11)
+# Ciências Farmacêuticas
+rc2 = (10*9)/(13*14)
+# Ciências Biológicas
+rc3 = (19*18)/(20*25)
+# Bioquímica
+rc4 = (14*4)/(12*2)
+
+rcs = c(rc1,rc2,rc3,rc4)
+```
+
+$$
+\begin{aligned}
+RC &= \frac{
+  \frac{
+    \pr(\text{Aprovado} \mid \text{Curso Ciências Químicas, Professor A})}{
+    \pr(\text{Reprovado} \mid \text{Curso Ciências Químicas, Professor A})
+  }
+}{
+  \frac{
+    \pr(\text{Aprovado} \mid \text{Curso Ciências Químicas, Professor B})}{
+    \pr(\text{Reprovado} \mid \text{Curso Ciências Químicas, Professor B})
+  }
+}\\
+&= \frac{ \frac{8/(8+11)}{11/(8+11)} }{ {\frac{11/(11+13)}{13/(11+13)}} }
+= \frac{8 \cdot 13}{11 \cdot 11} \approx `r round(rc1, digits=3)`
+\end{aligned}
+$$
+
+De modo análogo, encontramos a razão de chances para os outros estratos
 
 \begin{itemize}
-\item Ciências Químicas: $rc = \frac{8 \cdot 13}{11 \cdot 11} \approx 0,8595$
-\item Ciências Farmacêuticas: $rc = \frac{10 \cdot 9}{14 \cdot 13} \approx 0,4945$
-\item Ciências Biológicas: $rc = \frac{19 \cdot 18}{25 \cdot 20} \approx 0,6840$
-\item Bioquímica: $rc = \frac{14 \cdot 4}{2 \cdot 12} \approx 2,3334$
+\item Ciências Químicas: $rc = \frac{8 \cdot 13}{11 \cdot 11} \approx `r round(rc1, digits=3)`$
+\item Ciências Farmacêuticas: $rc = \frac{10 \cdot 9}{14 \cdot 13} \approx `r round(rc2, digits=3)`$
+\item Ciências Biológicas: $rc = \frac{19 \cdot 18}{25 \cdot 20} \approx `r round(rc3, digits=3)`$
+\item Bioquímica: $rc = \frac{14 \cdot 4}{2 \cdot 12} \approx `r round(rc4, digits=3)`$
 \end{itemize}
 
-\begin{table}[!h]
-\centering
-\caption{Frequência de aprovação e reprovação com razão de chance}
-\begin{tabular}{ccccc}
-\hline
- &  & \multicolumn{2}{c}{Desempenho}\\
-\cline{3-4}
-Curso & Professor & Aprovado & Reprovado & Razão de chances\\
-\hline
-\multirow{2}*{Ciências Químicas} & A & 8 & 11 & \multirow{2}*{0,8595}\\
-& B & 11 & 13 & \\
-\hline
-\multirow{2}*{Ciências Farmacêuticas} & A & 10 & 14 & \multirow{2}*{0,4945}\\
-& B & 13 & 9 & \\
-\hline
-\multirow{2}*{Ciências Biológicas} & A & 19 & 25 & \multirow{2}*{0,6840}\\
-& B & 20 & 18 &\\
-\hline
-\multirow{2}*{Bioquímica} & A & 14 & 2 & \multirow{2}*{2,3334}\\
-& B & 12 & 4 &\\
-\hline
-\end{tabular}
-\end{table}
+```{r}
+# Ciências Químicas
+rc1 = (8*13)/(11*11)
+# Ciências Farmacêuticas
+rc2 = (10*9)/(13*14)
+# Ciências Biológicas
+rc3 = (19*18)/(20*25)
+# Bioquímica
+rc4 = (14*4)/(12*2)
 
-\item Calculando a razão de chances de Mantel-Haenszel: (três casas decimais de precisão)
+rcs = c(rc1,rc2,rc3,rc4)
+rcs
+```
 
-\begin{equation*}
-rc_{MH} = \frac{\frac{8 \cdot 24}{43}+\frac{10 \cdot 22}{46}+\frac{19 \cdot 38}{82}+\frac{14 \cdot 16}{32}}{\frac{11 \cdot 19}{43}+\frac{13 \cdot 24}{46}+\frac{20 \cdot 44}{82}+\frac{12 \cdot 16}{32}} \approx 0,8829 
-\end{equation*}
 
-\begin{table}[!h]
-\centering
-\caption{Frequência de aprovação e reprovação com total}
-\begin{tabular}{ccccc}
-\hline
- &  & \multicolumn{2}{c}{Desempenho} & \\
-\cline{3-4}
-Curso & Professor & Aprovado & Reprovado & Total\\
-\hline
-\multirow{2}*{Ciências Químicas} & A & 8 & 11 & 19\\
-& B & 11 & 13 & 24\\
-\cline{5-5}
-& & & & 43\\
-\hline
-\multirow{2}*{Ciências Farmacêuticas} & A & 10 & 14 & 24\\
-& B & 13 & 9 & 22\\
-\cline{5-5}
-& & & & 46\\
-\hline
-\multirow{2}*{Ciências Biológicas} & A & 19 & 25 & 44 \\
-& B & 20 & 18 & 38\\
-\cline{5-5}
-& & & & 82\\
-\hline
-\multirow{2}*{Bioquímica} & A & 14 & 2 & 16\\
-& B & 12 & 4 & 16\\
-\cline{5-5}
-& & & & 32\\
-\hline
-\end{tabular}
-\end{table}
+b) Calcule a razão de chances de Mantel-Haenszel correspondente.
 
-\item A conclusão que chegamos é de que é mais provável ser aprovado com o professor B, tendo apenas uma excessão que é no curso de bioquímica, onde o professor A apresentou uma taxa de aprovação melhor do que B, mas também nesse curso vemos que a taxa de aprovação de ambos professores é bastante superior aos demais cursos. 
-\end{enumerate}
+Calculemos a razão de chances comum de Mantel-Haenszel, $r c_{M H}$, descrita na quarta nota do capítulo 5 de Singer e Morettin,
+
+$$
+r c_{M H}=\sum_{h \in H} w_{h} r c_{h}
+$$
+
+com 
+$$
+w_{h}=\frac{n_{h 12} n_{h 21}}{n_{h++}} / \sum_{h \in H} \frac{n_{h 12} n_{h 21}}{n_{h++}}
+$$
+onde $h \in H=\{ \text{Ciências Químicas, Ciências Farmacêuticas, Ciências Biológicas, Bioquímica} \}$ são os estratos, $n_{h 12}$ é número de alunos no estrato $h$, professor $A$ e que foram Reprovados; $n_{h 21}$ é número de alunos no estrato $h$, professor $B$ e que foram Aprovados; e $n_{h ++}$ é número de alunos no estrato $h$.
+
+Calculemos os quocientes para cada estrato e em seguida os pesos $w_h$:
+```{r}
+# calculemos os quocientes para cada estrato
+# Ciências Químicas
+q_1 = 11*11/43
+# Ciências Farmacêuticas
+q_2 = 13*14/46
+# Ciências Biológicas
+q_3 = 20*25/82
+# Bioquímica
+q_4 = 12*2/32
+
+q = c(q_1, q_2, q_3, q_4)
+
+# logo os pesos são
+w = q/sum(q)
+w
+```
+
+Com isso, calculamos 
+
+```{r}
+rc_mh = sum(w * rcs)
+```
+
+$$
+r c_{M H} \approx `r round(rc_mh, digits=3)`
+$$
+
+
+c) Expresse suas conclusões de forma não técnica.
+
+Dentre os cursos Ciências Químicas, Ciências Farmacêuticas e Ciências Biológicas a chance do estudante ser aprovado pelo professor A é menor que a chance de ser aprovado pelo professor B. Já no estrato Bioquímica, é o contrário: a chance de ser aprovado pelo professor A é cerca de 2 vezes maior que a chance de ser aprovado pelo professor B.
+
+A razão de chances commum diz que, levando em consideração os diferentes cursos, a chance geral, de um estudante ser aprovado pelo professor A é `r round((1-rc_mh)*100)`% menor que a chance de ser aprovado pelo professor B. A estatística de Mantel-Haenszel é uma média ponderada das razões de chances de cada curso.
+
+A conclusão que chegamos é de que é mais provável ser aprovado com o professor B, tendo apenas uma excessão que é no curso de bioquímica, onde o professor A apresentou uma taxa de aprovação melhor do que B, mas também nesse curso vemos que a taxa de aprovação de ambos professores é bastante superior aos demais cursos. 
+
 
