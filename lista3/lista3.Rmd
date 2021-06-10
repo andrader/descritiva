@@ -70,6 +70,10 @@ library(psych)
 library(car)
 library(corrplot)
 
+library(rstatix)
+library(emmeans)
+library(DescTools)
+
 library(states)
 ```
 
@@ -848,6 +852,77 @@ apresentar nenhuma associação tanto com ns como sba.
 
 
 ## Exercício 5
+
+Tabela com tempo de recuperação de cada participante:
+
+| Dose da subs. A | sub. B baixa  | sub. B média  | sub. B alta  |
+|:---------------:|:-------------:|:-------------:|:------------:|
+| baixa           |     10,4      |      8,9      |      4,8     |
+| baixa           |     12,8      |      9,1      |      4,5     |
+| baixa           |     14,6      |      8,5      |      4,4     |
+| baixa           |     10,5      |      9,0      |      4,6     |
+| alta            |      5,8      |      8,9      |      9,1     |
+| alta            |      5,2      |      9,1      |      9,3     |
+| alta            |      5,5      |      8,7      |      8,7     |
+| alta            |      5,3      |      9,0      |      9,4     |
+
+```{r, echo=FALSE}
+dados_5e5 <- read.csv("~/Documents/Aulas/2021_1/MAE0217/descritiva/data/l3-c5e5.csv", dec=",", stringsAsFactors=TRUE)
+dados_5e5$doseA <- factor(dados_5e5$doseA, levels=c("baixa", "alta"))
+dados_5e5$doseB <- factor(dados_5e5$doseB, levels=c("baixa", "média", "alta"))
+dados_5e5$doseC <- factor(dados_5e5$doseC, levels=c("bb", "bm", "ba", "ab", "am", "aa"))
+```
+
+### a-)
+  Dado o conjunto de dados acima podemos chegar aos seguintes valores de média e
+  desvio padrão por grupo:
+
+    Grupo 1 (A=baixa; B=baixa):
+        média: 12,1
+        desv. pad.: 2,0
+    Grupo 2 (A=baixa; B=média):
+        média: 8,9
+        desv. pad.: 0,3
+    Grupo 3 (A=baixa; B=alta):
+        média: 4,6
+        desv. pad.: 0,2
+
+    Grupo 4 (A=alta; B=baixa):
+        média: 5,5
+        desv. pad.: 0,3
+    Grupo 1 (A=alta; B=média):
+        média: 8,9
+        desv. pad.: 0,2
+    Grupo 1 (A=alta; B=alta):
+        média: 9,1
+        desv. pad.: 0,3
+
+  Com isso podemos observar que a combinação que oferece a recuperação mais
+  rápida é a combinação 3, visto que essa apresenta o menor tempo para o
+  desaparecimento dos sintomas com o menor desvio padrão.
+
+### b-)
+
+
+
+### c-)
+```{r, echo=FALSE, out.width="50%"}
+ggplot(dados_5e5, aes(x=doseA, y=tempo, group=doseB, color=doseB)) +
+  geom_line(stat="summary", fun.data="mean_se", size=0.6) +
+  stat_summary(geom="point", fun="mean") +
+  geom_errorbar(stat="summary", fun.data="mean_se", width=0.1)
+
+ggplot(dados_5e5, aes(x=doseB, y=tempo, group=doseA, color=doseA)) +
+  geom_line(stat="summary", fun.data="mean_se", size=0.6) +
+  stat_summary(geom="point", fun="mean") +
+  geom_errorbar(stat="summary", fun.data="mean_se", width=0.1)
+```
+
+### d-)
+```{r, echo=FALSE}
+anova_dose <- aov(tempo ~ doseA*doseB, dados_5e5)
+summary(anova_dose)
+```
 
 
 ## Exercício 9
