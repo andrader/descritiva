@@ -47,6 +47,8 @@ editor_options:
 ---
 
 \newcommand{\var}{\operatorname{Var}}
+\newcommand{\pr}{\operatorname{\mathbb{P}}}
+
 
 \pagebreak
 
@@ -832,6 +834,132 @@ result <- apply(combinacoes, 1, analisa)
 ```
 
 ## Exercício 10
+
+
+Os dados abaixo reportam-se a uma avaliação do desempenho de um conjunto de 203 estudantes universitários em uma disciplina introdutória de Álgebra e Cálculo. Os estudantes, agrupados segundo os quatro cursos em que estavam matriculados, foram ainda aleatoriamente divididos em dois grupos por curso, a cada um dos quais foi atribuído um de dois professores que lecionaram a mesma matéria. O desempenho de cada aluno foi avaliado por meio da mesma prova.
+ 
+\begin{table}[ht]
+\caption{Frequências de aprovação/reprovação de estudantes.}
+\centering
+\begin{tabular}{cccc}
+\hline & & \multicolumn{2}{c} { Desempenho } \\
+\cline { 3 - 4 } Curso & Professor & Aprovado & Reprovado \\
+\hline Ciências Químicas & A & 8 & 11 \\
+& B & 11 & 13 \\
+\hline Ciências Farmacêuticas & A & 10 & 14 \\
+& B & 13 & 9 \\
+\hline Ciências Biológicas & A & 19 & 25 \\
+& B & 20 & 18 \\
+\hline Bioquímica & A & 14 & 2 \\
+& B & 12 & 4 \\
+\hline
+\end{tabular}
+\end{table}
+
+```{r, echo=FALSE}
+dados <- tibble::tribble(
+  ~Curso, ~Professor, ~Aprovado, ~Reprovado,
+  "Ciências Químicas", "A", 8 ,11,
+  "Ciências Químicas","B" ,11 ,13,
+  "Ciências Farmacêuticas","A" ,10 ,14,
+  "Ciências Farmacêuticas","B", 13, 9,
+  "Ciências Biológicas","A" ,19 ,25,
+  "Ciências Biológicas","B" ,20 ,18,
+  "Bioquímica","A", 14, 2,
+  "Bioquímica","B", 12, 4,
+)
+```
+
+a) Para valiar a associação entre Professor e Desempenho, calcule a razão de chances em cada estrato.
+
+Para o estrato "Ciências Químicas" temos que a razão de cahnces é
+
+
+$$
+\begin{aligned}
+RC &= \frac{
+  \frac{
+    \pr(\text{Aprovado} \mid \text{Curso Ciências Químicas, Professor A})}{
+    \pr(\text{Reprovado} \mid \text{Curso Ciências Químicas, Professor A})
+  }
+}{
+  \frac{
+    \pr(\text{Aprovado} \mid \text{Curso Ciências Químicas, Professor B})}{
+    \pr(\text{Reprovado} \mid \text{Curso Ciências Químicas, Professor B})
+  }
+}\\
+&= \frac{ \frac{8/(8+11)}{11/(8+11)} }{ {\frac{11/(11+13)}{13/(11+13)}} }
+= \frac{8 \cdot 13}{11 \cdot 11} \approx 0.86
+\end{aligned}
+$$
+
+De modo análogo, para os outros estratos encontramos
+
+```{r}
+# Ciências Químicas
+rc1 = (8*13)/(11*11)
+# Ciências Farmacêuticas
+(rc2 = (10*9)/(13*14))
+# Ciências Biológicas
+(rc3 = (19*18)/(20*25))
+# Bioquímica
+(rc4 = (14*4)/(12*2))
+
+rcs = c(rc1,rc2,rc3,rc4)
+```
+
+
+
+
+b) Calcule a razão de chances de Mantel-Haenszel correspondente.
+
+Calculemos a razão de chances comum de Mantel-Haenszel, $r c_{M H}$, descrita na quarta nota do capítulo 5 de Singer e Morettin,
+
+$$
+r c_{M H}=\sum_{h \in H} w_{h} r c_{h}
+$$
+
+com 
+$$
+w_{h}=\frac{n_{h 12} n_{h 21}}{n_{h++}} / \sum_{h \in H} \frac{n_{h 12} n_{h 21}}{n_{h++}}
+$$
+onde $h \in H=\{ \text{Ciências Químicas, Ciências Farmacêuticas, Ciências Biológicas, Bioquímica} \}$ são os estratos, $n_{h 12}$ é número de alunos no estrato $h$, professor $A$ e que foram Reprovados; $n_{h 21}$ é número de alunos no estrato $h$, professor $B$ e que foram Aprovados; e $n_{h ++}$ é número de alunos no estrato $h$.
+
+Calculemos os quocientes para cada estrato e em seguida os pesos $w_h$:
+```{r}
+# calculemos os quocientes para cada estrato
+# Ciências Químicas
+q_1 = 11*11/43
+# Ciências Farmacêuticas
+q_2 = 13*14/46
+# Ciências Biológicas
+q_3 = 20*25/82
+# Bioquímica
+q_4 = 12*2/32
+
+q = c(q_1, q_2, q_3, q_4)
+
+# logo os pesos são
+w = q/sum(q)
+w
+```
+
+Com isso, calculamos 
+
+```{r}
+rc_mh = sum(w * rcs)
+```
+
+$$
+r c_{M H} \approx `r round(rc_mh, digits=3)`
+$$
+
+
+c) Expresse suas conclusões de forma não técnica.
+
+Dentre os cursos Ciências Químicas, Ciências Farmacêuticas e Ciências Biológicas a chance do estudante ser aprovado pelo professor A é menor que a chance de ser aprovado pelo professor B. Já no estrato Bioquímica, é o contrário: a chance de ser aprovado pelo professor A é cerca de 2 vezes maior que a chance de ser aprovado pelo professor B.
+
+A razão de chances commum diz que, levando em consideração os diferentes cursos, a chance geral, de um estudante ser aprovado pelo professor A é `r round((1-rc_mh)*100)`% menor que a chance de ser aprovado pelo professor B. A estatística de Mantel-Haenszel é uma média ponderada das razões de chances de cada curso.
 
 
 ## Exercício 12
