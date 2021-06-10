@@ -713,7 +713,7 @@ chisq.test(table(ied_, elied_2))
 ```
 
 
-## Exercício 25
+## Exercício 25 (versão maio)
 
 \begin{proof}[Prova]
 Consideremos duas amostras de uma variável $X$ com $n$ unidades amostrais cada,
@@ -743,6 +743,53 @@ $$
 
 Portanto, $\overline{\operatorname{Var}(X)}=\operatorname{Var}(X)$ quando as médias das duas amostras são iguais.
 \end{proof}
+
+
+## Exercício 25 (versão junho)
+
+\begin{proof}[Prova] A estatística 4.1 é 
+$$
+\chi^{2}=\sum_{i=1}^{4} \frac{\left(o_{i}-e_{i}\right)^{2}}{e_{i}}
+$$
+
+O valor observado é $o_{ij}=n_{ij}$. 
+
+Sob a hipótese nula de não associação, temos que
+
+$$
+p_{i j}= p_{i+} p_{+j}
+$$
+
+onde $p_{ij}=n_{ij}/n$, $p_{i+}=n_{i+}/n$ e $p_{+j}=n_{+j}/n$. 
+
+Com isso, o valor esperado na casela $(i, j)$ é
+
+$$
+e_{i j}=np_{i j} = np_{i+} p_{+j} = n\left(\frac{n_{i+}}{n}\right)\left(\frac{n_{+j}}{n}\right)=\frac{n_{i+} n_{+j}}{n}
+$$
+
+Escrevamos a estatítica 4.1 como uma soma dupla, tal qual em uma tabela $2\times 2$,
+
+$$
+\chi^{2}=\sum_{i=1}^{2}\sum_{j=1}^{2} \frac{\left(o_{ij}-e_{ij}\right)^{2}}{e_{ij}}
+$$
+
+Substituindo, $o_{ij}$ e $e_{ij}$ por $n_{ij}$ e ${n_{i+} n_{+j}}/{n}$ respectivamente, obtemos
+
+$$
+\chi^{2}=\sum_{i=1}^{2}\sum_{j=1}^{2} \frac{\left(n_{ij}-{n_{i+} n_{+j}}/{n}\right)^{2}}{{n_{i+} n_{+j}}/{n}}
+$$
+
+Como na estatística 4.1, mostramos para tabelas $2\times 2$, mas sem perda de generalidade, o mesmo vale para tabelas $r \times c$, 
+
+$$
+\chi^{2}=\sum_{i=1}^{r}\sum_{j=1}^{c} \frac{\left(n_{ij}-{n_{i+} n_{+j}}/{n}\right)^{2}}{{n_{i+} n_{+j}}/{n}}
+$$
+
+em que $n_{i j}$ é a frequência absoluta observada na linha $i$ e coluna $j$ e  $n_{i+}$ e $n_{+j}$ são, respectivamente, os totais das linhas e colunas.
+
+\end{proof}
+
 
 # Capítulo 5
 
