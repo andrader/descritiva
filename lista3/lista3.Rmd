@@ -35,14 +35,14 @@ header-includes:
   - \usepackage{pdfpages}
   - \usepackage{cleveref}
   - \usepackage{threeparttable}
-output: 
+output:
   # pdf_document:
   bookdown::pdf_document2:
     fig_caption: yes
     number_sections: no
     toc: true
     toc_depth: 2
-editor_options: 
+editor_options:
   chunk_output_type: console
 ---
 
@@ -83,7 +83,7 @@ a)
 
 ```{r}
 
-tabela = read.csv("data/coronarias(1).csv", sep = ";", h=T, dec=",")
+tabela = read.csv("data/coronarias.csv", sep = ";", h=T, dec=",")
 
 tabela$SEXO <- factor(tabela$SEXO, label = c("M", "F"), levels = c(0,1))
 col <- na.omit(tabela$COL)
@@ -242,11 +242,11 @@ chance0 <- p0 / (1 - p0)
 
 f <- function(row) {
   p1 <- row[2] / row[3]
-  risco_relativo <- p1 / p0 
-  
+  risco_relativo <- p1 / p0
+
   chance1 <- p1 / (1 - p1)
   razao_de_chance <- chance1 / chance0
-    
+
   return(c(risco_relativo, razao_de_chance, p1))
 }
 risk <- apply(celulas, 1, f)
@@ -296,7 +296,7 @@ Se $p_{1} = 2p_{2}$ \\
 \[\omega = \frac{2p_{2}} { ( 1-2p_{2} ) } / \frac{p_{2}} {(1-p_{2})}  \] \\
 \begin{center}
 
-\(\omega = \cfrac{2(1-p_{2})} { ( 1-2p_{2} ) } \neq 2  \) para $p_{2} = 0$ 
+\(\omega = \cfrac{2(1-p_{2})} { ( 1-2p_{2} ) } \neq 2  \) para $p_{2} = 0$
 \end{center}
 
 Logo, temos que razão de chance igual a 2.0 não indica que a probabilidade de um grupo é 2 vezes a do outro.
@@ -307,7 +307,7 @@ Logo, temos que razão de chance igual a 2.0 não indica que a probabilidade de 
 ## Exercício 13
 
 ```{r}
-sman = read.csv2("data/smansoni -.csv", sep = ";", h=T, dec=",", )
+sman = read.csv2("data/smansoni-.csv", sep = ";", h=T, dec=",", )
 
 #Smansoni negativo
 
@@ -505,9 +505,9 @@ chisq.test(table(elied1, elied2))
 
 
 
-sman1 = read.csv2("data/smansoni +.csv", sep = ";", h=T, dec=",", )
+sman1 = read.csv2("data/smansoni+.csv", sep = ";", h=T, dec=",", )
 
-#Smasoni positivo
+#Smansoni positivo
 
 
 elied_1 <- factor(sman1$ELIEDA1, label = c("NÃO", "SIM"), levels = c(0,1))
@@ -721,7 +721,7 @@ Consideremos duas amostras de uma variável $X$ com $n$ unidades amostrais cada,
 $$
 \{x_1, x_2,\dots, x_n, x_{n+1}, x_{n+2},\dots, x_{2n} \}
 $$
-e suponhamos que as suas médias são iguais, isto é, 
+e suponhamos que as suas médias são iguais, isto é,
 $\bar{x_1} = \sum_{i=1}^{n}x_i = \sum_{i=n+1}^{2n}x_i = \bar{x}_2 := \bar{x}$.
 
 
@@ -747,12 +747,12 @@ Portanto, $\overline{\operatorname{Var}(X)}=\operatorname{Var}(X)$ quando as mé
 
 ## Exercício 25 (versão junho)
 
-\begin{proof}[Prova] A estatística 4.1 é 
+\begin{proof}[Prova] A estatística 4.1 é
 $$
 \chi^{2}=\sum_{i=1}^{4} \frac{\left(o_{i}-e_{i}\right)^{2}}{e_{i}}
 $$
 
-O valor observado é $o_{ij}=n_{ij}$. 
+O valor observado é $o_{ij}=n_{ij}$.
 
 Sob a hipótese nula de não associação, temos que
 
@@ -760,7 +760,7 @@ $$
 p_{i j}= p_{i+} p_{+j}
 $$
 
-onde $p_{ij}=n_{ij}/n$, $p_{i+}=n_{i+}/n$ e $p_{+j}=n_{+j}/n$. 
+onde $p_{ij}=n_{ij}/n$, $p_{i+}=n_{i+}/n$ e $p_{+j}=n_{+j}/n$.
 
 Com isso, o valor esperado na casela $(i, j)$ é
 
@@ -780,7 +780,7 @@ $$
 \chi^{2}=\sum_{i=1}^{2}\sum_{j=1}^{2} \frac{\left(n_{ij}-{n_{i+} n_{+j}}/{n}\right)^{2}}{{n_{i+} n_{+j}}/{n}}
 $$
 
-Como na estatística 4.1, mostramos para tabelas $2\times 2$, mas sem perda de generalidade, o mesmo vale para tabelas $r \times c$, 
+Como na estatística 4.1, mostramos para tabelas $2\times 2$, mas sem perda de generalidade, o mesmo vale para tabelas $r \times c$,
 
 $$
 \chi^{2}=\sum_{i=1}^{r}\sum_{j=1}^{c} \frac{\left(n_{ij}-{n_{i+} n_{+j}}/{n}\right)^{2}}{{n_{i+} n_{+j}}/{n}}
@@ -794,7 +794,7 @@ em que $n_{i j}$ é a frequência absoluta observada na linha $i$ e coluna $j$ e
 # Capítulo 5
 
 ## Exercício 1
-a) Construa um gráfico de dispersão simbolico para avaliar a relação entre as variáveis 
+a) Construa um gráfico de dispersão simbolico para avaliar a relação entre as variáveis
 altfac, proffac e grupo e comente os resultados.
 
 
@@ -804,8 +804,8 @@ altfac, proffac e grupo e comente os resultados.
 library(ggplot2)
 library(readxl)
 tipofacial <- read_excel("data/tipofacial.xls")
-ggplot(tipofacial , aes(altfac , proffac ), grupo) + 
-    geom_point( aes(shape = grupo, color = grupo) , size = 3)+ theme_bw() + 
+ggplot(tipofacial , aes(altfac , proffac ), grupo) +
+    geom_point( aes(shape = grupo, color = grupo) , size = 3)+ theme_bw() +
     scale_color_manual( values = c("red", "blue" , "green")) +
     theme(axis.title = element_text(size=13)) +
     theme(legend.position="bottom", legend.direction="horizontal",
@@ -869,11 +869,11 @@ analisa <- function(combinacao) {
   means <- colMeans(elementos)
   covariance <- cov(elementos)
   correlation <- cor(elementos)
-  
+
   pandoc.table(means, caption=paste("Vetor de médias dos elementos para espécie", combinacao[1], "e tipovia", combinacao[2]))
   pandoc.table(covariance, caption=paste("Matriz de covariância dos elementos para espécie", combinacao[1], "e tipovia", combinacao[2]))
   pandoc.table(correlation, caption=paste("Matriz de correlação dos elementos para espécie", combinacao[1], "e tipovia", combinacao[2]))
-  
+
   return(list(means, covariance, correlation))
 }
 
@@ -926,7 +926,7 @@ Portanto, em geral a concentração de Fe diminui com do tipo de via Arterial, p
 ## Exercício 12
 
 Os dados abaixo reportam-se a uma avaliação do desempenho de um conjunto de 203 estudantes universitários em uma disciplina introdutória de Álgebra e Cálculo. Os estudantes, agrupados segundo os quatro cursos em que estavam matriculados, foram ainda aleatoriamente divididos em dois grupos por curso, a cada um dos quais foi atribuído um de dois professores que lecionaram a mesma matéria. O desempenho de cada aluno foi avaliado por meio da mesma prova.
- 
+
 \begin{table}[ht]
 \caption{Frequências de aprovação/reprovação de estudantes.}
 \centering
@@ -1026,7 +1026,7 @@ $$
 r c_{M H}=\sum_{h \in H} w_{h} r c_{h}
 $$
 
-com 
+com
 $$
 w_{h}=\frac{n_{h 12} n_{h 21}}{n_{h++}} / \sum_{h \in H} \frac{n_{h 12} n_{h 21}}{n_{h++}}
 $$
@@ -1051,7 +1051,7 @@ w = q/sum(q)
 w
 ```
 
-Com isso, calculamos 
+Com isso, calculamos
 
 ```{r}
 rc_mh = sum(w * rcs)
@@ -1068,6 +1068,6 @@ Dentre os cursos Ciências Químicas, Ciências Farmacêuticas e Ciências Biol�
 
 A razão de chances commum diz que, levando em consideração os diferentes cursos, a chance geral, de um estudante ser aprovado pelo professor A é `r round((1-rc_mh)*100)`% menor que a chance de ser aprovado pelo professor B. A estatística de Mantel-Haenszel é uma média ponderada das razões de chances de cada curso.
 
-A conclusão que chegamos é de que é mais provável ser aprovado com o professor B, tendo apenas uma excessão que é no curso de bioquímica, onde o professor A apresentou uma taxa de aprovação melhor do que B, mas também nesse curso vemos que a taxa de aprovação de ambos professores é bastante superior aos demais cursos. 
+A conclusão que chegamos é de que é mais provável ser aprovado com o professor B, tendo apenas uma excessão que é no curso de bioquímica, onde o professor A apresentou uma taxa de aprovação melhor do que B, mas também nesse curso vemos que a taxa de aprovação de ambos professores é bastante superior aos demais cursos.
 
 
