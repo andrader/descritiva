@@ -46,6 +46,8 @@ editor_options:
   chunk_output_type: console
 ---
 
+\newcommand{\var}{\operatorname{Var}}
+
 \pagebreak
 
 ```{r setup, include=FALSE}
@@ -711,7 +713,34 @@ chisq.test(table(ied_, elied_2))
 
 ## Exercício 25
 
+\begin{proof}[Prova]
+Consideremos duas amostras de uma variável $X$ com $n$ unidades amostrais cada,
 
+$$
+\{x_1, x_2,\dots, x_n, x_{n+1}, x_{n+2},\dots, x_{2n} \}
+$$
+e suponhamos que as suas médias são iguais, isto é, 
+$\bar{x_1} = \sum_{i=1}^{n}x_i = \sum_{i=n+1}^{2n}x_i = \bar{x}_2 := \bar{x}$.
+
+
+Da definição $(4.9)$, temos
+
+$$
+\overline{\var(X)} = \frac{\sum_{i=1}^{k} n_{i} \var_{i}(X)}{\sum_{i=1}^{k} n_{i}}
+$$
+nesse caso, com $k=2$ e $n_i=n,\ i=1,2$ (notemos que será usado o estimador viesado para a variância, mas o mesmo poderia ser mostrado se usássemos a $n-1$ na formula da variância e $n_i=n-1$ na definição $(4.9)$). Com isso, temos que
+
+$$
+\begin{aligned}
+\overline{\var(X)} &= \frac{n \var_1(X) + n \var_2(X)}{2n} \\
+&= \frac{1}{2}\left\{  \frac{1}{n}\sum_{i=1}^{n}(x_i - \bar{x}_1)^2 + \frac{1}{n}\sum_{i=n+1}^{2n}(x_i - \bar{x}_2)^2 \right\} \\
+&= \frac{1}{2n}\sum_{i=1}^{2n}(x_i - \bar{x})^2 \\
+&= \var(X)
+\end{aligned}
+$$
+
+Portanto, $\overline{\operatorname{Var}(X)}=\operatorname{Var}(X)$ quando as médias das duas amostras são iguais.
+\end{proof}
 
 # Capítulo 5
 

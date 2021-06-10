@@ -25,19 +25,19 @@ https://www.ime.usp.br/~jmsinger/MAE0217/cdados2021mai07.pdf
 
 Capítulo 4
 
-- [ ] 6 - kushimizo
-- [ ] 10 - 
+- [x] 6 - kushimizo
+- [x] 10 - ricardo
 - [ ] 11 - rafael
 - [ ] 12 - rafael
-- [ ] 13 - kushimizo
+- [x] 13 - kushimizo
 - [ ] 25 - rubens andrade
 
 Capítulo 5
 
-- [ ] 1 - 
-- [ ] 5 - 
-- [ ] 9 - 
+- [x] 1 - alguém fez pelo visto
+- [ ] 5 - Rubens gomes
+- [x] 9 - ricardo
 - [ ] 10 - rubens andrade
-- [ ] 12 -
+- [x] 12 - Natalia
 
 https://www.ime.usp.br/~jmsinger/MAE0217/cdados2021mai07.pdf
