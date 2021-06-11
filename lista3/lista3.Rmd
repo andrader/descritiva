@@ -882,6 +882,46 @@ result <- apply(combinacoes, 1, analisa)
 
 ## Exercício 10
 
+Considere os dados do arquivo `arvores`. Construa gráficos de perfis médios (com barras de desvios padrões) para avaliar o efeito de espécie de árvores e tipo de via na concentração de Fe. Utilize uma ANOVA com dois fatores para avaliar a possível interação e efeitos dos fatores na variável resposta. Traduza os resultados sem utilizar o jargão estatístico.
+
+
+A seguir o gráfico de perfis médios, com barras de erro padrão (desvio padrão amostral)
+
+```{r, fig.cap="Gráfico de perfis médios.", warning=FALSE}
+dados <- readxl::read_excel("data/arvores.xls") %>% 
+  select(Fe, tipovia, especie)
+
+pd = position_dodge(.1)
+(p1 <- dados %>% 
+  ggplot(aes(tipovia, Fe, group=especie, color=especie)) +
+  stat_summary(fun.data = mean_se,
+               geom = "errorbar", width=1, position = pd, size=0.8) +
+  stat_summary(fun = mean, geom = "line", size=1, position = pd) +
+  stat_summary(fun = mean, geom = "point", size=2, position = pd) +
+  labs(caption="Barra: erro padrão")+
+  scale_color_viridis_d() +
+  theme(
+    legend.position = 'top', 
+    plot.caption = element_text(hjust = 0),panel.grid.minor = element_blank()
+  ))
+
+
+```
+
+
+No gráfico de perfis médios, observa-se que, em geral a concentração de Fe diminui com do tipo de via Arterial, passando por Colletor e Local I, até Local II. Nota-se também que a espécie Alfeneiro possui maior concentração para todos os tipos de via, enquanto que Sibipiruna a menor concentração quando o tipo de via é Arterial e a espécie Tipuana, a menor nos demais tipos de via. Além disso, observa-se o não paralelismo entre as linhas, sugerindo indícios de interação entre os fatores. 
+
+A seguir, usamos uma ANOVA com dois fatores para avaliar a possível interação e efeitos dos fatores na variável resposta. 
+
+```{r}
+aov2 = aov(Fe ~ tipovia * especie,dados)
+aov2
+aov2 %>% summary()
+```
+
+Vemos que os dois fatores e a interação entre os eles são significativos a um  nível de 5%.
+
+Portanto, em geral a concentração de Fe diminui com do tipo de via Arterial, passando por Colletor e Local I, até Local II. Nota-se também que a espécie Alfeneiro possui maior concentração para todos os tipos de via, enquanto que Sibipiruna a menor concentração quando o tipo de via é Arterial e a espécie Tipuana, a menor nos demais tipos de via. Além disso, podemos traduzir a interação como: o tipo de via impacta a concentração de Fe diferentemente em cada espécie, em especial para a Tipuana, como podemos ver no gráfico.
 
 ## Exercício 12
 
