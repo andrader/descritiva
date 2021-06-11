@@ -866,8 +866,8 @@ Tabela com tempo de recuperação de cada participante:
 | alta            |      5,5      |      8,7      |      8,7     |
 | alta            |      5,3      |      9,0      |      9,4     |
 
-```{r, echo=FALSE}
-dados_5e5 <- read.csv("~/Documents/Aulas/2021_1/MAE0217/descritiva/data/l3-c5e5.csv", dec=",", stringsAsFactors=TRUE)
+```{r}
+dados_5e5 <- read.csv("data/l3-c5e5.csv", dec=",", stringsAsFactors=TRUE)
 dados_5e5$doseA <- factor(dados_5e5$doseA, levels=c("baixa", "alta"))
 dados_5e5$doseB <- factor(dados_5e5$doseB, levels=c("baixa", "média", "alta"))
 dados_5e5$doseC <- factor(dados_5e5$doseC, levels=c("bb", "bm", "ba", "ab", "am", "aa"))
@@ -902,11 +902,15 @@ dados_5e5$doseC <- factor(dados_5e5$doseC, levels=c("bb", "bm", "ba", "ab", "am"
   desaparecimento dos sintomas com o menor desvio padrão.
 
 ### b-)
-
-
+  
+  O modelo usado depende dos fatores \emph{Dose da substância A} e 
+  \emph{Dose da substância B}. O fator \emph{A} possui níveis \emph{"baixa"} e
+  \emph{"alta"}, enquanto o fator \emph{B} possui os níveis \emph{"baixa"},
+  \emph{"média"} e \emph{"alta"}.
 
 ### c-)
 ```{r, echo=FALSE, out.width="50%"}
+#options(contrasts=c("contr.sum", "contr.poly"))
 ggplot(dados_5e5, aes(x=doseA, y=tempo, group=doseB, color=doseB)) +
   geom_line(stat="summary", fun.data="mean_se", size=0.6) +
   stat_summary(geom="point", fun="mean") +
@@ -918,12 +922,21 @@ ggplot(dados_5e5, aes(x=doseB, y=tempo, group=doseA, color=doseA)) +
   geom_errorbar(stat="summary", fun.data="mean_se", width=0.1)
 ```
 
+  Podemos observar que a variação das dose das substâncias causa grandes
+  alterações no resultado esperado, demonstrando grande interação entre os
+  fatores. A única exceção foi o caso de uma dose média da substância B, onde
+  alterações no nível da dose da substância A não alteraram o tempo de
+  recuperação dos envolvidos.
+
 ### d-)
-```{r, echo=FALSE}
+```{r}
 anova_dose <- aov(tempo ~ doseA*doseB, dados_5e5)
-summary(anova_dose)
+#summary(anova_dose)
+Anova(anova_dose, type='III')
 ```
 
+  Com a ANOVA fica explicito o alto nível de interação dos fatores da amostra.
+  Já que os valores de \emph{Pr} são muito menores do que $0,05$.
 
 ## Exercício 9
 
