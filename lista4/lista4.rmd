@@ -1,0 +1,230 @@
+---
+title: "MAE0217 - Estatística Descritiva - Lista 4"
+author: |
+  | Natalia Hitomi Koza\thanks{Número USP: 10698432}
+  | Rafael Gonçalves Pereira da Silva\thanks{Número USP: 9009600}
+  | Ricardo Geraldes Tolesano\thanks{Número USP: 10734557}
+  | Rubens Kushimizo Rodrigues Xavier\thanks{Número USP: 8626718}
+  | Rubens Gomes Neto\thanks{Número USP: 9318484}
+  | Rubens Santos Andrade Filho\thanks{Número USP: 10370336}
+  | Thamires dos Santos Matos\thanks{Número USP: 9402940}
+date: "`r stringr::str_to_sentence(format(Sys.time(), '%B de %Y'))`"
+lang: pt-BR
+header-includes:
+  # - \usepackage[brazilian]{babel}
+  - \usepackage{float}
+  - \usepackage{amsmath}
+  - \usepackage{amsthm}
+  - \floatplacement{figure}{H}
+  - \usepackage{indentfirst}
+  - \setlength{\parindent}{4em}
+  - \setlength{\parskip}{1em}
+  - \usepackage{booktabs}
+  - \usepackage{dcolumn}
+  - \usepackage{bm}
+  - \usepackage{titling}
+  - \thanksmarkseries{arabic} % \thanks footnotes com numeros
+  - \usepackage[bottom]{footmisc} % corrige posição footnotes
+  - \usepackage{pdfpages}
+  - \usepackage{tocloft}
+  - \renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+  - \usepackage{amssymb}
+  - \renewcommand\qedsymbol{$\blacksquare$}
+  - \usepackage{pdfpages}
+  - \usepackage{cleveref}
+  - \usepackage{threeparttable}
+output: 
+  # pdf_document:
+  bookdown::pdf_document2:
+    fig_caption: yes
+    number_sections: no
+    toc: true
+    toc_depth: 2
+editor_options: 
+  chunk_output_type: console
+---
+
+\pagebreak
+
+```{r setup, include=FALSE}
+options(width = 60)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+library(tidyverse)
+library(knitr)
+library(readxl)
+library(dplyr)
+library(patchwork)
+library(pander)
+library(ggplot2)
+source('src/helpers.R')
+```
+
+## Exercício 1
+
+i)
+
+Tomaremos Volume USG como a variável explicativa x e Peso Real como a variável resposta y. Adotaremos o modelo de regressão linear simples $y_i = \alpha + \beta x_i + e_i$, onde $\alpha$ é o intercepto, $beta$ é a inclinação da reta, e $e_i$ são erros aleatórias não correlacionados.
+
+ii)
+
+```{r}
+scatter_title <- "Peso real x volume USG"
+scatter_x <- "Volume USG"
+scatter_y <- "Peso real"
+fit_titles <- list("Resíduos vs observações x para o ajuste feito no modelo",
+                    "Gráfico Q-Q normal para o ajuste feito no modelo",
+                    "Resíduos normalizados vs observações x para o ajuste feito no modelo",
+                    "Resíduos normalizados vs influência das observações para o ajuste feito no modelo")
+
+
+dados1 <- read_excel("data/peso_volume_figado.xlsx")
+dados1 <- dados1[order(dados1$volume_usg), ]
+# ggplot(dados, aes(x=volume_usg, y=peso_real)) + geom_point() + geom_smooth(method=lm)
+questao_i <- function(dados) {}
+ggplot(dados1, aes(x=volume_usg, y=peso_real)) + geom_point() + labs(title=scatter_title, x=scatter_x, y=scatter_y)
+```
+
+iii)
+
+Realizaremos o ajuste do modelo e mostraremos algumas métricas de qualidade do modelo:
+
+
+```{r, fig.height=4}
+ajustarModelo <- function(dados) {
+  ajuste <- lm(peso_real ~ volume_usg, data=dados)
+  intercept <- ajuste$coefficients[1]
+  slope <- ajuste$coefficients[2]
+  print("O ajuste encontrou os coeficientes:")
+  print(paste("Alpha:", intercept))
+  print(paste("Beta:", slope))
+  p <- ggplot(dados, aes(x=volume_usg, y=peso_real)) + geom_point() + geom_abline(intercept = intercept, slope = slope) + labs(title=scatter_title, x=scatter_x, y=scatter_y)
+  plot(p)
+  print(summary(ajuste))
+  plot(ajuste, 
+       caption=fit_titles)
+  
+  return(ajuste)
+}
+
+ajuste <- ajustarModelo(dados1)
+```
+
+A análise do ajuste indicou que as observações 3, 11 e 15 são mais influentes no modelo. Em especial, a observação 15 se destaca como outlier em todos os gráficos mostrados. Realizaremos novamente o ajuste com essa observação removida. Não removeremos as observações 3 e 11 dado que possuímos poucas observações e elas não fogem do padrão na mesma intensidade elevada da observação 15.
+
+```{r, fig.height=4}
+dados2 <- dados1[-c(15), ]
+ajuste <- ajustarModelo(dados2)
+```
+
+Observamos uma melhora significativa no valor R^2 após a remoção da observação 15.
+Os gráficos indicam que os resíduos possuem os valores dentro do esperado. Idealmente, o R^2 deveria estar próximo de 1, mas não está. Dessa forma, podemos concluir que o ajuste do modelo aproxima os dados, mas não estritamente. Assim, espera-se que o intervalo de confiança ao prever o peso real com base no volume seja grande.
+
+iv)
+
+Construindo intervalos de confiança dos parâmetros:
+
+```{r}
+confidence_intervals <- confint(ajuste)
+rownames(confidence_intervals) <- c("Alpha", "Beta")
+kable(confidence_intervals, caption="Intervalos de confiança para o ajuste dos parâmetros do modelo")
+```
+
+v)
+
+A seguir, construiremos a tabela.
+
+```{r}
+volumes <- c(600, 700, 800, 900, 1000)
+df <- data.frame(volume_usg = volumes)
+previsto <- predict(ajuste, df, interval='confidence')
+previsto <- data.frame(previsto)
+intervalo <- previsto$fit - previsto$lwr
+previsto <- cbind(volume_usg = volumes, peso = previsto$fit, intervalo = intervalo)
+colnames(previsto) <- c("Volume", "Peso previsto", "Intervalo de confiança de 95%")
+kable(previsto, caption="Pesos previstos pelo modelo")
+```
+
+vi)
+
+vi)i)
+
+Novamente, tomaremos o Volume USG como a variável explicativa x e o Peso Real como a variável resposta y. Adotaremos o modelo de regressão linear simples $y_i = \beta x_i + e_i$, onde $beta$ é a inclinação da reta e $e_i$ são erros aleatórias não correlacionados.
+
+vi)ii)
+
+```{r}
+dados3 <- data.frame(dados1)
+ggplot(dados3, aes(x=volume_usg, y=peso_real)) + geom_point() + labs(title=scatter_title, x=scatter_x, y=scatter_y)
+
+```
+
+vi)iii)
+
+Realizaremos o ajuste do modelo e mostraremos algumas métricas de qualidade do modelo:
+
+```{r, fig.height=4}
+ajustarModelo <- function(dados) {
+  # - 1 omite o intercepto
+  ajuste <- lm(peso_real ~ volume_usg - 1, data=dados)
+  intercept <- 0
+  slope <- ajuste$coefficients
+  print("O ajuste encontrou o coeficiente:")
+  print(paste("Beta:", slope))
+  p <- ggplot(dados, aes(x=volume_usg, y=peso_real)) + geom_point() + geom_abline(intercept = intercept, slope = slope) + labs(title=scatter_title, x=scatter_x, y=scatter_y)
+  plot(p)
+  print(summary(ajuste))
+  plot(ajuste, caption=fit_titles)
+  
+  return(ajuste)
+}
+
+ajuste <- ajustarModelo(dados3)
+```
+
+Novamente, os gráficos indicam que a observação 15 é um outlier. Refaremos o ajuste removendo a observação 15.
+
+```{r, fig.height=4}
+dados4 <- dados1[-c(15), ]
+ajuste <- ajustarModelo(dados4)
+```
+
+As mesmas observações sobre a qualidade do modelo se aplicam. Os gráficos indicam que os resíduos possuem os valores dentro do esperado. Idealmente, o R^2 deveria estar próximo de 1, mas não está. Dessa forma, podemos concluir que o ajuste do modelo aproxima os dados, mas não estritamente. Assim, espera-se que o intervalo de confiança ao prever o peso real com base no volume seja grande.
+
+vi)iv)
+
+Construindo intervalos de confiança dos parâmetros:
+
+```{r}
+confidence_intervals <- confint(ajuste)
+rownames(confidence_intervals) <- c("Beta")
+kable(confidence_intervals, caption="Intervalos de confiança para o ajuste dos parâmetros do modelo")
+```
+
+vi)v)
+
+A seguir, construiremos a tabela.
+
+```{r}
+volumes <- c(600, 700, 800, 900, 1000)
+df <- data.frame(volume_usg = volumes)
+previsto <- predict(ajuste, df, interval='confidence')
+previsto <- data.frame(previsto)
+intervalo <- previsto$fit - previsto$lwr
+previsto <- cbind(volume_usg = volumes, intervalo=previsto$fit, intervalo = intervalo)
+colnames(previsto) <- c("Volume", "Peso previsto", "Intervalo de confiança de 95%")
+kable(previsto, caption="Pesos previstos pelo modelo")
+```
+
+vi)vi)
+
+Ambos os modelos satisfazem de forma similar as métricas mostradas na etapa (iii). Entretanto, observa-se na etapa (v) que o segundo modelo apresenta intervalos de confiança menores para suas predições de peso real. Dessa forma, o modelo sem intersecto demonstrou-se mais conveniente. Destacamos que o intervalo de confiança de 97,5% do parâmetro $\alpha$ no primeiro modelo era consideravelmente alto, o que poderia indicar que ele não possuia muita importância no modelo.
+
+## Exercício 2
+
+## Exercício 3
+
+## Exercício 4
+
+## Exercício 15
+
+## Exercício 16
