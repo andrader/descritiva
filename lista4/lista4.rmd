@@ -56,6 +56,11 @@ library(dplyr)
 library(patchwork)
 library(pander)
 library(ggplot2)
+library(ggplot)
+library(rstatix)
+library(ggpubr)
+library(car)
+library(corrgram)
 source('src/helpers.R')
 ```
 
@@ -221,11 +226,390 @@ Ambos os modelos satisfazem de forma similar as métricas mostradas na etapa (ii
 
 ## Exercício 2
 
-## Exercício 3
+i) O valor $\alpha$, correspondente ao ponto onde a reta da regressão corta o eixo $y$ quando $x=0$, será nesse caso o valor médio dentre todas as médias das notas obtidas, tanto por alunos de escolas públicas quanto particulares. 
+E $\beta$ corresponde a metade da diferença entre a média das médias dos alunos na escola particular e pública.
 
+ii) Sejam $\hat{\alpha}$ e $\hat{\beta}$ estimativa para $\alpha$ e $\beta$ respectivamente, pelo Método dos Mínimos Quadrados temos:
+
+```{r, echo=TRUE}
+medias <- read_xlsx("data/medias_escolas.xlsx")
+x <- medias$x
+y <- medias$y
+
+x_bar <- mean(x) 
+y_bar <- mean(y)
+
+beta_hat <- sum( (x-x_bar)*(y-y_bar) )/sum( (x-x_bar)^2 )
+alpha_hat <- y_bar - beta_hat*x_bar
+```
+
+```{r, echo=FALSE}
+print(paste("Alpha estimado: ", alpha_hat))
+print(paste("Beta estimado: ", beta_hat))
+```
+
+Estimativa $S^2$ para $\sigma^2$:
+
+```{r, echo=TRUE}
+n = length(x)
+y_pred <- alpha_hat + beta_hat*x
+residuos <- y-y_pred
+SQRes <- sum(residuos^2)
+S2 <- SQRes/(n-2)
+```
+
+```{r, echo=FALSE}
+print(paste("Variância estimada: ", S2))
+```
+
+```{r, echo=FALSE, fig.height=2, fig.width=5, fig.align='center'}
+mediaescola <- transform(medias, tipo=factor(x))
+ggplot(mediaescola) + aes(x = tipo, y = y, color=tipo) + 
+  geom_point(size=2, pch=20) + 
+  labs(title = "Desempenho", x = "x (Escola)", y = "y (Média)", color="Tipo de escola\n") + scale_color_manual(labels=c("Publica", "Particular"), values=c("blue", "red")) + 
+  geom_abline(intercept = alpha_hat, slope = beta_hat, color="red") 
+
+```
+
+iii) Avalie a qualidade do modelo através de técnicas de diagnóstico
+
+Através do coeficiênte de determinação:
+
+```{r, echo= TRUE}
+y_pred <- alpha_hat + beta_hat*x
+SQTot <- sum( (y-y_bar)^2 )
+SQRes <- sum( (y-y_pred)^2 )
+
+R2 <- 1-SQRes/SQTot
+```
+```{r, echo=FALSE}
+print(paste("Coeficiente R2: ", R2))
+```
+Vemos que o modelo proposto explica apenas 9% da variância dos dados, formando um ajuste ruim. 
+
+```{r, echo=FALSE}
+plot_titles <- list("Gráfico de Resíduos", 
+                    "Gráfico Q-Q Normal", 
+                    "Gráfico de Resíduos Padronizados",
+                    "Distância de Cook")
+```
+
+```{r, echo=TRUE}
+modelo <- lm(medias, formula = y~x)
+par(mfrow = c(2,2))
+plot(modelo, which=c(1:4), pch=19, caption=plot_titles)
+```
+
+Analisando o Gráfico de Cook temos os pontos alavanca destacados (7, 8 e 12), indicando que são os pontos de maior influência na estimação dos parâmetros. No gráfico de Resíduos Padronizados vemos na parte inferior outliers, que não aparecem nos demais gráficos, também nota-se que a variância dos dados é aparentemente uniforme com a variação da variável explicativa, sugerindo homocedastidade. Já no Gráfico Q-Q Normal os pontos visualmente se aproximam de uma linha reta, indicando que a distribuição das médias das notas apresenta comportamento similar ao da distribuição normal.
+
+iv) Supondo que $e_i$ possui distribuição normal e não são correlacionados.
+
+Usando que 
+
+```{=latex}
+\begin{equation*}
+Var(\hat{\alpha}) = \sigma^2 \frac{\sum_{i=1}^{n}{x_i^2}}{n \sum_{i=1}^{n}(x_i-\bar{x})^2}
+\end{equation*}
+```
+
+têm-se
+
+```{r, echo=TRUE}
+var_alpha <- S2*sum(x^2)/(n*sum((x-x_bar)^2))
+delta_alpha <- 1.96*sqrt(var_alpha/n)
+delta_alpha
+```
+Agora para $\hat{\beta}$, com:
+
+```{=latex}
+\begin{equation*}
+Var(\hat{\beta}) = \frac{\sigma^2}{\sum_{i=1}^{n}{(x_i-\bar{x})^2}}
+\end{equation*}
+```
+
+obtemos:
+
+```{r, echo=TRUE}
+var_beta <- S2/sum( (x-x_bar)^2 )
+delta_beta <- 1.96*sqrt(var_beta/n)
+delta_beta
+```
+
+Disso, os limites para os intervalos de confiança de 95% são:
+
+```{=latex}
+\begin{table}[ht]
+\caption{Intervalo de confiança de 95\% para $\alpha$ e $\beta$}
+\vspace*{0.5cm}
+\centering
+\begin{tabular}{c|ccc}
+Parâmetro & Valor esperado & limite inferior & limite superior\\
+\hline
+$\alpha$ & 6.8556 & 6.7377 & 6.9734\\
+$\beta$ & 0.3222 & 0.2043 & 0.4401\\
+\hline
+\end{tabular}
+\end{table}
+
+Obs.: os valores apresentados estão arredondados na quarta casa decimal.
+```
+
+v) Usando que o intervalo de 95% de confiança para a estimação das notas é:
+
+```{=latex}
+\begin{equation*}
+\hat{y} \pm 1,96S\sqrt{\frac{1}{n}+\frac{(x_0+\bar{x})^2}{\sum_{i=1}^{n}{(x_i-\bar{x})^2}}}
+\end{equation*}
+```
+
+temos:
+
+```{r, echo=TRUE, fig.height=3, fig.width=6, fig.align='center'}
+desvio <- sqrt(S2)
+x_val = (-11:11)/10 #pontos intermediários para plotar o gráfico
+y_val = alpha_hat + beta_hat*x_val
+delta <- 1.96*desvio*sqrt(1/n+(x_val-x_bar)^2/sum((x_val-x_bar)^2))
+
+upper = y_val+delta
+lower = y_val-delta
+
+plot(x, y)
+title("Intervalo de Confiança")
+abline(a = alpha_hat, b = beta_hat)
+lines(x_val, upper, col="red")
+lines(x_val, lower, col="red")
+
+```
+Quando $x_0 \in \{-1, 1\}$ com $\bar{x} = 0$ temos:
+
+```{r, echo=TRUE}
+delta <- 1.96*desvio*sqrt(1/n+1/sum(x^2))
+delta
+```
+```{=latex}
+\begin{table}[ht]
+\caption{Intervalos de confiança de 95\% para o valor esperado das notas}
+\vspace*{0.5cm}
+\centering
+\begin{tabular}{c|ccc}
+Escola & $\hat{y}$ & limite inferior & limite superior\\
+\hline
+Particular & 7.178 & 6.4704 & 7.8851\\
+Pública & 6.534 & 5.8260 & 7.2407\\
+\hline
+\end{tabular}
+\end{table}
+
+Obs.: os valores apresentados estão arredondados na quarta casa decimal.
+```
+
+vi) 
+
+vii)
+
+a) Nesse caso $\alpha$ é o valor de $y$ em $x=0$ da reta da regressão, ou seja, correspondente a média das médias dos alunos de escola pública. Já $\beta$ é a diferença entre a média das médias dos alunos de escola particular e pública.
+
+b) Sendo $\hat{\alpha}$ e $\hat{\beta}$ estimativas de $\alpha$ e $\beta$ pelo Método de Mínimos Quadrados:
+
+```{r, echo=TRUE}
+medias <- read_xlsx("data/medias_escolas.xlsx")
+medias[medias == -1] <- 0
+x <- medias$x
+y <- medias$y
+
+x_bar <- mean(x)
+y_bar <- mean(y)
+
+beta_hat <- sum((x-x_bar)*(y-y_bar))/sum((x-x_bar)^2)
+alpha_hat <- y_bar-beta_hat*x_bar
+```
+
+```{r, echo=FALSE}
+print(paste("Alpha estimado: ", alpha_hat))
+print(paste("Beta estimado:", beta_hat))
+```
+
+Estimativa $S^2$ para $\sigma^2$: 
+
+```{r, echo=TRUE}
+n = length(x)
+y_pred <- alpha_hat+beta_hat*x
+residuos <- y-y_pred
+SQRes <- sum(residuos^2)
+S2 <- 1/(n-2)*SQRes
+```
+```{r, echo=FALSE}
+print(paste("Variância estimada: ", S2))
+```
+
+```{r, echo=FALSE, fig.height=2, fig.width=5, fig.align='center'}
+dados <- transform(medias, tipo=factor(x))
+ggplot(dados) + aes(x = tipo, y = y, color=tipo) + 
+  geom_point(size=2, pch=20) + 
+  labs(title = "Desempenho", x = "x (Escola)", y = "y (Média)", color="Tipo de escola\n") + scale_color_manual(labels=c("Publica", "Particular"), values=c("blue", "red")) + 
+  geom_abline(intercept = alpha_hat, slope = beta_hat, color="red") 
+
+```
+
+c) Qualidade do ajuste
+
+
+Através do coeficiênte de determinação:
+
+```{r, echo= TRUE}
+y_pred <- alpha_hat+beta_hat*x
+SQTot <- sum((y-y_bar)^2)
+SQRes <- sum((y-y_pred)^2)
+
+R2 <- 1-SQRes/SQTot
+```
+
+```{r, echo=FALSE}
+print(paste("Coeficiente R2: ", R2))
+```
+Obtemos o mesmo coeficiente de determinação que no item (iii), tendo, como antes, pouca explicação dos dados pelo modelo.
+
+```{r, echo=TRUE}
+modelo <- lm(medias, formula = y~x)
+par(mfrow = c(2,2))
+plot(modelo, which=c(1:4), pch=19, caption=plot_titles)
+```
+
+Assim como no item (iii), temos no Gráfico de Cook os mesmos pontos alavanca (7, 8 e 12), influenciando notavelmente na estimação dos parâmetros. No gráfico de Resíduos Padronizados vemos na parte inferior outliers em torno do valor 0.2, que não aparecem nos demais gráficos, ainda no Gráfico de Resíduos Padronizados notamos a homocedastidade. E o Gráfico Q-Q Normal sugere que a distribuição das médias das notas apresenta comportamento similar ao da distribuição normal.
+
+d)  Analogamente ao item (iv), supondo que $e_i$ possui distribuição normal e não são correlacionados. Temos:
+
+```{r, echo=TRUE}
+var_alpha <- S2*sum(x^2)/(n*sum((x-x_bar)^2))
+delta_alpha <- 1.96*sqrt(var_alpha/n)
+delta_alpha
+```
+
+```{r, echo=TRUE}
+var_beta <- S2/sum( (x-x_bar)^2 )
+delta_beta <- 1.96*sqrt(var_beta/n)
+delta_beta
+```
+
+Portanto, os limites para os intervalos de confiança de 95% são:
+
+```{=latex}
+\begin{table}[ht]
+\caption{Intervalo de confiança de 95\% para $\alpha$ e $\beta$}
+\vspace*{0.5cm}
+\centering
+\begin{tabular}{c|ccc}
+Parâmetro & Valor esperado & limite inferior & limite superior\\
+\hline
+$\alpha$ & 6.5334 & 6.3667 & 6.7001\\
+$\beta$ & 0.6444 & 0.4087 & 0.8802\\
+\hline
+\end{tabular}
+\end{table}
+
+Obs.: os valores apresentados estão arredondados na quarta casa decimal.
+```
+
+
+e) Usando que o intervalo de 95% de confiança para a estimação das notas é:
+
+```{=latex}
+\begin{equation*}
+\hat{y} \pm 1,96S\sqrt{\frac{1}{n}+\frac{(x_0+\bar{x})^2}{\sum_{i=1}^{n}{(x_i-\bar{x})^2}}}
+\end{equation*}
+```
+
+temos:
+
+```{r, echo=TRUE, fig.height=3, fig.width=6, fig.align='center'}
+desvio <- sqrt(S2)
+x_val = (-1:21)/20 # pontos intermediários para plotar o gráfico
+y_val = alpha_hat + beta_hat*x_val
+delta <- 1.96*desvio*sqrt(1/n+(x_val-x_bar)^2/sum((x_val-x_bar)^2))
+
+upper = y_val+delta
+lower = y_val-delta
+
+plot(x, y)
+title("Intervalo de Confiança")
+abline(a = alpha_hat, b = beta_hat)
+lines(x_val, upper, col="red")
+lines(x_val, lower, col="red")
+
+```
+Quando $x_0 \in \{-1, 1\}$ com $\bar{x} = 0$ temos:
+
+```{r, echo=TRUE}
+delta <- 1.96*desvio*sqrt(1/n+1/sum(x^2))
+delta
+```
+```{=latex}
+\begin{table}[ht]
+\caption{Intervalos de confiança de 95\% para o valor esperado das notas}
+\vspace*{0.5cm}
+\centering
+\begin{tabular}{c|ccc}
+Escola & $\hat{y}$ & limite inferior & limite superior\\
+\hline
+Particular & 7.178 & 6.3114 & 8.0441\\
+Pública & 6.534 & 5.6667 & 7.3997\\
+\hline
+\end{tabular}
+\end{table}
+
+Obs.: os valores apresentados estão arredondados na quarta casa decimal.
+```
+
+## Exercício 3
+# i)
+```{r}
+imovel <- c("1",  "2",  "3",  "4" , "5",  "6"  ,"7" , "8" , "9" , "10", "11", "12", "13", "14")
+
+area <- c(128 , 125,  200, 4000,  258,  360,  896,  400,  352,  250,  135, 6492, 1040, 3000)
+
+preco <- c(10000,  9000,  17000, 200000,  25000,  40000,  70000,  25000,  35000,  27000,  11000, 120000,   
+35000, 300000)
+
+area <- as.numeric(resumo$area)
+preco <- as.numeric(resumo$preco)
+resumo <- cbind.data.frame(imovel, area, preco)
+
+plot(resumo$area,resumo$preco)
+```
+
+# ii)
+```{r}
+mod <- lm(preco ~ area, data=resumo)
+
+par(mfrow=c(2,2))
+plot(mod)
+
+summary(mod)
+
+ggplot(data = resumo, mapping = aes(x = area, y=preco))+
+  geom_point()+
+  geom_smooth(method = "lm", col = "red")+
+  theme_classic()
+
+y = 31,011x + 26935
+```
+
+# iii)
+```{r}
+y = 52051ln(x) - 259408
+R^2 = 0.642
+```
+
+# iv)
+```{r}
+predict(mod, data.frame(area = 200))
+predict(mod, data.frame(area = 500))
+predict(mod, data.frame(area = 1000))
+```
 ## Exercício 4
 
 ## Exercício 15
+
 a)
 \begin{math}
 \\SSE(\hat{\beta} ) = \sum_{i=1}^{n} \hat{e_{i}}^2 = \sum_{i=1}^{n} (y_{i}-\hat{\beta} x_{i})^2
@@ -264,5 +648,6 @@ c)
 IC(\beta) = \hat{\beta} \pm t\sqrt{S^2} 
           = \beta^2 \pm t \cfrac{\sum_{i=1}^{n}(y_{i}-\hat{\beta}x_{i})}{ \sqrt{n-1}}
 \end{math}
+
 
 ## Exercício 16
