@@ -610,4 +610,44 @@ predict(mod, data.frame(area = 1000))
 
 ## Exercício 15
 
+a)
+\begin{math}
+\\SSE(\hat{\beta} ) = \sum_{i=1}^{n} \hat{e_{i}}^2 = \sum_{i=1}^{n} (y_{i}-\hat{\beta} x_{i})^2
+\\
+\\\cfrac {d SSE(\hat{\beta})} {d \hat{\beta}} =
+  \sum_{i=1}^{n} 2(y_{i}-\hat{\beta} x_{i}) (-x_{i} )  = 
+   -2\sum_{i=1}^{n}(y_{i}x_{i}-\hat{\beta} x_{i}^2) 
+\\
+\\ \cfrac {d SSE(\hat{\beta})} {d \hat{\beta}} = 
+      -2\sum_{i=1}^{n} (y_{i}x_{i}) + 2\hat{\beta}\sum_{i=1}^{n}x_{i}^2 = 0 , \text{para minimizar}
+\\
+\\ 2\sum_{i=1}^{n} (y_{i}x_{i}) = 2\hat{\beta}\sum_{i=1}^{n}x_{i}^2 
+\\
+\\ \hat{\beta} = \cfrac { \sum_{i=1}^{n} (y_{i}x_{i}) } { \sum_{i=1}^{n}x_{i}^2 }
+             = \cfrac {\sum_{i=1}^{n}  (y_{i}-\bar{y}) (x_{i}-\bar{x})}{ \sum_{i=1}^{n} (x_{i}-\bar{x})^2} 
+\\
+\\ \hat{\sigma}^2 = S^2 = \cfrac{1}{n-1}SSE(\beta)
+\\
+\\ S^2 = \cfrac{1}{n-1} \sum_{i=1}^{n} (y_{i}-\hat{\beta} x_{i}^2) 
+\\
+\end{math}
+
+b)
+\begin{math}
+\\
+\text{Para o modelo de regressão linear simples classico, onde }\\
+\hat{e_{i}} \sim Normal( 0 , \sigma ^2 ) \text{ temos } \hat{\beta} \sim t - student(n-1)
+\\
+\end{math}
+
+c)
+\begin{math}
+\\
+\text{Sendo t para }  \gamma / 2 \text{ com n-1 graus de liberdade, temos: }
+\\
+IC(\beta) = \hat{\beta} \pm t\sqrt{S^2} 
+          = \beta^2 \pm t \cfrac{\sum_{i=1}^{n}(y_{i}-\hat{\beta}x_{i})}{ \sqrt{n-1}}
+\end{math}
+
+
 ## Exercício 16
