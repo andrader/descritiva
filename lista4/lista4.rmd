@@ -56,6 +56,11 @@ library(dplyr)
 library(patchwork)
 library(pander)
 library(ggplot2)
+library(ggplot)
+library(rstatix)
+library(ggpubr)
+library(car)
+library(corrgram)
 source('src/helpers.R')
 ```
 
@@ -222,7 +227,51 @@ Ambos os modelos satisfazem de forma similar as métricas mostradas na etapa (ii
 ## Exercício 2
 
 ## Exercício 3
+# i)
+```{r}
+imovel <- c("1",  "2",  "3",  "4" , "5",  "6"  ,"7" , "8" , "9" , "10", "11", "12", "13", "14")
 
+area <- c(128 , 125,  200, 4000,  258,  360,  896,  400,  352,  250,  135, 6492, 1040, 3000)
+
+preco <- c(10000,  9000,  17000, 200000,  25000,  40000,  70000,  25000,  35000,  27000,  11000, 120000,   
+35000, 300000)
+
+area <- as.numeric(resumo$area)
+preco <- as.numeric(resumo$preco)
+resumo <- cbind.data.frame(imovel, area, preco)
+
+plot(resumo$area,resumo$preco)
+```
+
+# ii)
+```{r}
+mod <- lm(preco ~ area, data=resumo)
+
+par(mfrow=c(2,2))
+plot(mod)
+
+summary(mod)
+
+ggplot(data = resumo, mapping = aes(x = area, y=preco))+
+  geom_point()+
+  geom_smooth(method = "lm", col = "red")+
+  theme_classic()
+
+y = 31,011x + 26935
+```
+
+# iii)
+```{r}
+y = 52051ln(x) - 259408
+R^2 = 0.642
+```
+
+# iv)
+```{r}
+predict(mod, data.frame(area = 200))
+predict(mod, data.frame(area = 500))
+predict(mod, data.frame(area = 1000))
+```
 ## Exercício 4
 
 ## Exercício 15
