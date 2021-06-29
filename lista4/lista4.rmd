@@ -591,14 +591,18 @@ ggplot(data = resumo, mapping = aes(x = area, y=preco))+
   geom_smooth(method = "lm", col = "red")+
   theme_classic()
 
-y = 31,011x + 26935
+
 ```
 
+$$y = 31.011*x + 26935$$
+
 # iii)
-```{r}
-y = 52051ln(x) - 259408
-R^2 = 0.642
-```
+
+$$y = 52051 \log(x) - 259408$$
+
+
+$$R^2 = 0.642$$
+
 
 # iv)
 ```{r}
