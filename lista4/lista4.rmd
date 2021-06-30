@@ -33,14 +33,14 @@ header-includes:
   - \usepackage{pdfpages}
   - \usepackage{cleveref}
   - \usepackage{threeparttable}
-output: 
+output:
   # pdf_document:
   bookdown::pdf_document2:
     fig_caption: yes
     number_sections: no
     toc: true
     toc_depth: 2
-editor_options: 
+editor_options:
   chunk_output_type: console
 ---
 
@@ -105,9 +105,9 @@ ajustarModelo <- function(dados) {
   p <- ggplot(dados, aes(x=volume_usg, y=peso_real)) + geom_point() + geom_abline(intercept = intercept, slope = slope) + labs(title=scatter_title, x=scatter_x, y=scatter_y)
   plot(p)
   print(summary(ajuste))
-  plot(ajuste, 
+  plot(ajuste,
        caption=fit_titles)
-  
+
   return(ajuste)
 }
 
@@ -179,7 +179,7 @@ ajustarModelo <- function(dados) {
   plot(p)
   print(summary(ajuste))
   plot(ajuste, caption=fit_titles)
-  
+
   return(ajuste)
 }
 
@@ -226,7 +226,7 @@ Ambos os modelos satisfazem de forma similar as métricas mostradas na etapa (ii
 
 ## Exercício 2
 
-i) O valor $\alpha$, correspondente ao ponto onde a reta da regressão corta o eixo $y$ quando $x=0$, será nesse caso o valor médio dentre todas as médias das notas obtidas, tanto por alunos de escolas públicas quanto particulares. 
+i) O valor $\alpha$, correspondente ao ponto onde a reta da regressão corta o eixo $y$ quando $x=0$, será nesse caso o valor médio dentre todas as médias das notas obtidas, tanto por alunos de escolas públicas quanto particulares.
 E $\beta$ corresponde a metade da diferença entre a média das médias dos alunos na escola particular e pública.
 
 ii) Sejam $\hat{\alpha}$ e $\hat{\beta}$ estimativa para $\alpha$ e $\beta$ respectivamente, pelo Método dos Mínimos Quadrados temos:
@@ -236,7 +236,7 @@ medias <- read_xlsx("data/medias_escolas.xlsx")
 x <- medias$x
 y <- medias$y
 
-x_bar <- mean(x) 
+x_bar <- mean(x)
 y_bar <- mean(y)
 
 beta_hat <- sum( (x-x_bar)*(y-y_bar) )/sum( (x-x_bar)^2 )
@@ -264,10 +264,10 @@ print(paste("Variância estimada: ", S2))
 
 ```{r, echo=FALSE, fig.height=2, fig.width=5, fig.align='center'}
 mediaescola <- transform(medias, tipo=factor(x))
-ggplot(mediaescola) + aes(x = tipo, y = y, color=tipo) + 
-  geom_point(size=2, pch=20) + 
-  labs(title = "Desempenho", x = "x (Escola)", y = "y (Média)", color="Tipo de escola\n") + scale_color_manual(labels=c("Publica", "Particular"), values=c("blue", "red")) + 
-  geom_abline(intercept = alpha_hat, slope = beta_hat, color="red") 
+ggplot(mediaescola) + aes(x = tipo, y = y, color=tipo) +
+  geom_point(size=2, pch=20) +
+  labs(title = "Desempenho", x = "x (Escola)", y = "y (Média)", color="Tipo de escola\n") + scale_color_manual(labels=c("Publica", "Particular"), values=c("blue", "red")) +
+  geom_abline(intercept = alpha_hat, slope = beta_hat, color="red")
 
 ```
 
@@ -285,11 +285,11 @@ R2 <- 1-SQRes/SQTot
 ```{r, echo=FALSE}
 print(paste("Coeficiente R2: ", R2))
 ```
-Vemos que o modelo proposto explica apenas 9% da variância dos dados, formando um ajuste ruim. 
+Vemos que o modelo proposto explica apenas 9% da variância dos dados, formando um ajuste ruim.
 
 ```{r, echo=FALSE}
-plot_titles <- list("Gráfico de Resíduos", 
-                    "Gráfico Q-Q Normal", 
+plot_titles <- list("Gráfico de Resíduos",
+                    "Gráfico Q-Q Normal",
                     "Gráfico de Resíduos Padronizados",
                     "Distância de Cook")
 ```
@@ -304,7 +304,7 @@ Analisando o Gráfico de Cook temos os pontos alavanca destacados (7, 8 e 12), i
 
 iv) Supondo que $e_i$ possui distribuição normal e não são correlacionados.
 
-Usando que 
+Usando que
 
 ```{=latex}
 \begin{equation*}
@@ -403,7 +403,7 @@ Pública & 6.534 & 5.8260 & 7.2407\\
 Obs.: os valores apresentados estão arredondados na quarta casa decimal.
 ```
 
-vi) 
+vi)
 
 vii)
 
@@ -429,7 +429,7 @@ print(paste("Alpha estimado: ", alpha_hat))
 print(paste("Beta estimado:", beta_hat))
 ```
 
-Estimativa $S^2$ para $\sigma^2$: 
+Estimativa $S^2$ para $\sigma^2$:
 
 ```{r, echo=TRUE}
 n = length(x)
@@ -444,10 +444,10 @@ print(paste("Variância estimada: ", S2))
 
 ```{r, echo=FALSE, fig.height=2, fig.width=5, fig.align='center'}
 dados <- transform(medias, tipo=factor(x))
-ggplot(dados) + aes(x = tipo, y = y, color=tipo) + 
-  geom_point(size=2, pch=20) + 
-  labs(title = "Desempenho", x = "x (Escola)", y = "y (Média)", color="Tipo de escola\n") + scale_color_manual(labels=c("Publica", "Particular"), values=c("blue", "red")) + 
-  geom_abline(intercept = alpha_hat, slope = beta_hat, color="red") 
+ggplot(dados) + aes(x = tipo, y = y, color=tipo) +
+  geom_point(size=2, pch=20) +
+  labs(title = "Desempenho", x = "x (Escola)", y = "y (Média)", color="Tipo de escola\n") + scale_color_manual(labels=c("Publica", "Particular"), values=c("blue", "red")) +
+  geom_abline(intercept = alpha_hat, slope = beta_hat, color="red")
 
 ```
 
@@ -561,13 +561,13 @@ Obs.: os valores apresentados estão arredondados na quarta casa decimal.
 ```
 
 ## Exercício 3
-# i)
+### i)
 ```{r}
 imovel <- c("1",  "2",  "3",  "4" , "5",  "6"  ,"7" , "8" , "9" , "10", "11", "12", "13", "14")
 
 area <- c(128 , 125,  200, 4000,  258,  360,  896,  400,  352,  250,  135, 6492, 1040, 3000)
 
-preco <- c(10000,  9000,  17000, 200000,  25000,  40000,  70000,  25000,  35000,  27000,  11000, 120000,   
+preco <- c(10000,  9000,  17000, 200000,  25000,  40000,  70000,  25000,  35000,  27000,  11000, 120000,
 35000, 300000)
 
 resumo <- cbind(imovel, area, preco)
@@ -576,7 +576,7 @@ resumo <- as.data.frame(apply(resumo, 2, as.numeric))
 plot(resumo$area,resumo$preco)
 ```
 
-# ii)
+### ii)
 ```{r}
 mod <- lm(preco ~ area, data=resumo)
 
@@ -595,7 +595,7 @@ ggplot(data = resumo, mapping = aes(x = area, y=preco))+
 
 $$y = 31.011*x + 26935$$
 
-# iii)
+### iii)
 
 $$y = 52051 \log(x) - 259408$$
 
@@ -603,7 +603,7 @@ $$y = 52051 \log(x) - 259408$$
 $$R^2 = 0.642$$
 
 
-# iv)
+### iv)
 ```{r}
 predict(mod, data.frame(area = 200))
 predict(mod, data.frame(area = 500))
@@ -618,20 +618,20 @@ a)
 \\SSE(\hat{\beta} ) = \sum_{i=1}^{n} \hat{e_{i}}^2 = \sum_{i=1}^{n} (y_{i}-\hat{\beta} x_{i})^2
 \\
 \\\cfrac {d SSE(\hat{\beta})} {d \hat{\beta}} =
-  \sum_{i=1}^{n} 2(y_{i}-\hat{\beta} x_{i}) (-x_{i} )  = 
-   -2\sum_{i=1}^{n}(y_{i}x_{i}-\hat{\beta} x_{i}^2) 
+  \sum_{i=1}^{n} 2(y_{i}-\hat{\beta} x_{i}) (-x_{i} )  =
+   -2\sum_{i=1}^{n}(y_{i}x_{i}-\hat{\beta} x_{i}^2)
 \\
-\\ \cfrac {d SSE(\hat{\beta})} {d \hat{\beta}} = 
+\\ \cfrac {d SSE(\hat{\beta})} {d \hat{\beta}} =
       -2\sum_{i=1}^{n} (y_{i}x_{i}) + 2\hat{\beta}\sum_{i=1}^{n}x_{i}^2 = 0 , \text{para minimizar}
 \\
-\\ 2\sum_{i=1}^{n} (y_{i}x_{i}) = 2\hat{\beta}\sum_{i=1}^{n}x_{i}^2 
+\\ 2\sum_{i=1}^{n} (y_{i}x_{i}) = 2\hat{\beta}\sum_{i=1}^{n}x_{i}^2
 \\
 \\ \hat{\beta} = \cfrac { \sum_{i=1}^{n} (y_{i}x_{i}) } { \sum_{i=1}^{n}x_{i}^2 }
-             = \cfrac {\sum_{i=1}^{n}  (y_{i}-\bar{y}) (x_{i}-\bar{x})}{ \sum_{i=1}^{n} (x_{i}-\bar{x})^2} 
+             = \cfrac {\sum_{i=1}^{n}  (y_{i}-\bar{y}) (x_{i}-\bar{x})}{ \sum_{i=1}^{n} (x_{i}-\bar{x})^2}
 \\
 \\ \hat{\sigma}^2 = S^2 = \cfrac{1}{n-1}SSE(\beta)
 \\
-\\ S^2 = \cfrac{1}{n-1} \sum_{i=1}^{n} (y_{i}-\hat{\beta} x_{i}^2) 
+\\ S^2 = \cfrac{1}{n-1} \sum_{i=1}^{n} (y_{i}-\hat{\beta} x_{i}^2)
 \\
 \end{math}
 
@@ -648,9 +648,15 @@ c)
 \\
 \text{Sendo t para }  \gamma / 2 \text{ com n-1 graus de liberdade, temos: }
 \\
-IC(\beta) = \hat{\beta} \pm t\sqrt{S^2} 
+IC(\beta) = \hat{\beta} \pm t\sqrt{S^2}
           = \beta^2 \pm t \cfrac{\sum_{i=1}^{n}(y_{i}-\hat{\beta}x_{i})}{ \sqrt{n-1}}
 \end{math}
 
 
 ## Exercício 16
+
+### i)
+Para o modelo dado $\alpha$ representa a média das notas, e $\beta$ é a média
+das diferenças entre as médias parciais por tipo de escola, e a média total.
+
+### ii)
