@@ -656,7 +656,124 @@ IC(\beta) = \hat{\beta} \pm t\sqrt{S^2}
 ## Exercício 16
 
 ### i)
-Para o modelo dado $\alpha$ representa a média das notas, e $\beta$ é a média
-das diferenças entre as médias parciais por tipo de escola, e a média total.
+Para o modelo dado $\alpha$ representa a média geral das notas, e $\beta$ é a
+média das diferenças entre as médias parciais por tipo de escola, e a média
+total.
 
 ### ii)
+```{r}
+notas16 <- read.csv("data/l4-e16.csv")
+fit1 <- lm(notas16$nota ~ notas16$tipo1)
+fit2 <- lm(notas16$nota ~ notas16$tipo2)
+summary(notas16)
+```
+
+Para encontrar $\hat{\beta}$ temos que:
+$$
+\hat{\beta} = \cfrac { \sum_{i=1}^{n} (y_{i}x_{i}) } { \sum_{i=1}^{n}x_{i}^2 }
+$$
+```{r}
+notas16$dy <- notas16$nota - mean(notas16$nota)    # (yi - Y)
+
+notas16$dx1 <- notas16$tipo1 - mean(notas16$tipo1) # (xi - X)
+notas16$dx2 <- notas16$tipo2 - mean(notas16$tipo2)
+
+notas16$dx12 <- notas16$dx1 ** 2                   # (xi - X)^2
+notas16$dx22 <- notas16$dx2 ** 2
+
+notas16$dx1y <- notas16$dx1 * notas16$dy          # (xi - X) * (yi - Y)
+notas16$dx2y <- notas16$dx2 * notas16$dy
+
+beta1 <- sum(notas16$dx1y) / sum(notas16$dx12)
+beta2 <- sum(notas16$dx2y) / sum(notas16$dx22)
+beta1
+beta2
+```
+
+Para $\alpha$ temos que:
+$$
+\hat{\alpha} = \bar{y} - \hat{\beta} \bar{x}
+$$
+```{r}
+alpha1 = mean(notas16$nota) - (beta1 * mean(notas16$tipo1))
+alpha2 = mean(notas16$nota) - (beta2 * mean(notas16$tipo2))
+alpha1
+alpha2
+```
+
+Podemos aproximar $\sigma^{2}$ por:
+$$
+S^{2}= \cfrac{1}{n-2} \sum_{i=1}^{n} (y_{i} - \hat{\alpha} - \hat{\beta} x_{i})^{2}
+$$
+
+```{r}
+notas16$ei1 <- notas16$nota - alpha1 - (beta1 * notas16$tipo1)
+notas16$ei2 <- notas16$nota - alpha2 - (beta2 * notas16$tipo2)
+
+sdev1 <- (1/16) * sum(notas16$ei1 ** 2)
+sdev2 <- (1/16) * sum(notas16$ei2 ** 2)
+sdev1
+sdev2
+```
+
+### iii)
+
+Podemos avaliar a qualidade deste ajuste analisando o valor de $R^2$:
+
+$$
+R^{2} = 1 - \cfrac{ \sum_{i=1}^{n} (y_{i} - \hat{y_i})^{2}}{ \sum_{i=1}^{n} (y_{i} - \bar{y})^{2}}
+$$
+
+```{r}
+# aproveitando os residuos de fit1 e fit2
+notas16$res1 <- fit1$residuals
+notas16$res2 <- fit2$residuals
+
+sqres1 <- sum(notas16$res1 ** 2)
+sqres2 <- sum(notas16$res2 ** 2)
+
+sqtot <- sum(notas16$dy ** 2)
+
+rsqr1 <- 1 - (sqres1 / sqtot)
+rsqr2 <- 1 - (sqres2 / sqtot)
+rsqr1
+rsqr2
+```
+
+
+### iv)
+```{r}
+summary(fit1)
+summary(fit2)
+```
+
+Podemos observar um intervalo de confiança será:
+$$
+S_{\hat{\alpha_{1}}}^{2} = 0,2552\\
+S_{\hat{\beta_{1}}}^{2} = 0,2552\\
+S_{\hat{\alpha_{2}}}^{2} = 0,3609\\
+S_{\hat{\beta_{2}}}^{2} = 0,5104
+$$
+
+### v
+
+Para intervalos de confiança teremos:
+```{r}
+ic11 <- 1.96*sqrt(sdev1)*sqrt((1/18) + (((-1 - mean(notas16$nota))**2)/(sum(notas16$dx12))))
+ic12 <- 1.96*sqrt(sdev1)*sqrt((1/18) + (((1 - mean(notas16$nota))**2)/(sum(notas16$dx12))))
+
+ic21 <- 1.96*sqrt(sdev2)*sqrt((1/18) + (((0 - mean(notas16$nota))**2)/(sum(notas16$dx22))))
+ic22 <- 1.96*sqrt(sdev2)*sqrt((1/18) + (((1 - mean(notas16$nota))**2)/(sum(notas16$dx22))))
+
+ic11 # intervalo de confiança para alunos de escola pública, modelo 1
+ic12 # intervalo de confiança para alunos de escola particular, modelo 1
+ic21 # intervalo de confiança para alunos de escola pública, modelo 2
+ic22 # intervalo de confiança para alunos de escola particular, modelo 2
+```
+
+### vi)
+
+Valores encontrados:
+$$
+\hat{y} = 
+$$
