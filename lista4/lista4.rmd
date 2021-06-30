@@ -56,7 +56,7 @@ library(dplyr)
 library(patchwork)
 library(pander)
 library(ggplot2)
-library(ggplot)
+# library(ggplot)
 library(rstatix)
 library(ggpubr)
 library(car)
@@ -570,9 +570,8 @@ area <- c(128 , 125,  200, 4000,  258,  360,  896,  400,  352,  250,  135, 6492,
 preco <- c(10000,  9000,  17000, 200000,  25000,  40000,  70000,  25000,  35000,  27000,  11000, 120000,   
 35000, 300000)
 
-area <- as.numeric(resumo$area)
-preco <- as.numeric(resumo$preco)
-resumo <- cbind.data.frame(imovel, area, preco)
+resumo <- cbind(imovel, area, preco)
+resumo <- as.data.frame(apply(resumo, 2, as.numeric))
 
 plot(resumo$area,resumo$preco)
 ```
