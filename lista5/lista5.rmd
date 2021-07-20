@@ -68,6 +68,56 @@ source('src/helpers.R')
 
 ## Exercício 5
 
+### a)
+Podemos definir o seguinte modelo de regressão para os dados:
+$$
+y_{custos} = \alpha + \beta x_{cadeiras}
+$$
+Tendo $y$ como o valor dos custos, e $x$ como o número de cadeiras produzidas;
+temos que $\alpha$ representa os custos independentes da produção de cadeiras,
+enquanto $\beta$ representa o custo de prodção de cada cadeira.
+
+### b)
+```{r}
+dados_ex5 <- read.csv("data/l5-e5.csv")
+modelo_e5 <- lm(custos ~ n_cadeiras, data=dados_ex5)
+
+dados_ex5$dy <- dados_ex5$custos - mean(dados_ex5$custos)    # (yi - Y)
+
+dados_ex5$dx <- dados_ex5$n_cadeiras - mean(dados_ex5$n_cadeiras) # (xi - X)
+
+dados_ex5$dx2 <- dados_ex5$dx ** 2                   # (xi - X)^2
+
+dados_ex5$dxy <- dados_ex5$dx * dados_ex5$dy          # (xi - X) * (yi - Y)
+
+beta <- sum(dados_ex5$dxy) / sum(dados_ex5$dx2)
+alpha <- mean(dados_ex5$custos) - (beta * mean(dados_ex5$n_cadeiras))
+```
+
+Para extrapolar os custos de produzir 200 cadeiras podemos calcular:
+```{r}
+custos_200 <- alpha + (beta * 200)
+custos_200
+```
+
+### c)
+Para encontrar o número de cadeiras que precisam ser vendidas temos que encontrar:
+```{=latex}
+\begin{align*}
+20 n \ge \alpha + \beta n \\
+20 n - \beta n \ge \alpha \\
+(20 - \beta) n \ge \alpha \\
+n \ge \frac{\alpha}{20 - \beta}
+\end{align*}
+```
+
+Assim podemos encontrar que:
+```{r}
+n_lucro <- alpha / (20 - beta)
+n_lucro
+```
+
+Sendo assim temos um número de cadeiras de $82$.
 
 ## Exercício 8
 
@@ -115,13 +165,13 @@ fit_titles <- list("Resíduos vs observações x para o ajuste feito no modelo",
 mostrarAjuste <- function(dados, ajuste) {
 
   print(summary(ajuste))
-  plot(ajuste, 
+  plot(ajuste,
        caption=fit_titles)
-  
+
   #confidence_intervals <- confint(ajuste)
   #k <- kable(confidence_intervals, caption="Intervalos de confiança para o ajuste dos parâmetros do modelo")
   #print(k)
-  
+
   return(ajuste)
 }
 ```
@@ -207,5 +257,3 @@ P(Y_{i}=1|X=x) = \frac{\exp(\alpha + \beta x_{i})}{1 + \exp(\alpha + \beta x_{i}
 
 
 ## Exercício 6
-
-
