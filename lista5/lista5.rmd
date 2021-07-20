@@ -69,8 +69,85 @@ source('src/helpers.R')
 ## Exercício 5
 
 
-
 ## Exercício 8
+
+Formatamos a tabela de forma a facilitar a análise. As variáveis foram renomeadas de acordo com o seguinte dicionário:
+
+- consumo_oxigenio_pico - consumo de oxigênio no pico do exercício em ml/kg/min
+- sexo - F: feminino, M: masculino
+- idade - idade do paciente em anos
+- peso - peso do paciente em kg
+- classificacao_nyha - classe funcional pelo critério NYHA (1 a 4)
+- carga_esteira - carga utilizada na esteira ergométrica
+- frequencia_cardiaca - frequência cardíaca em batimentos por minuto
+- razao_troca_respiratoria - razão de troca respiratória em VCO2/VO2
+
+Mostrando algumas linhas da tabela:
+
+```{r}
+esforco <- read_excel("data/esforco_6_18.xlsx", na=".")
+pander(head(esforco, 10), caption="Dados contidos no arquivo esforco")
+summary(esforco)
+```
+
+Converteremos a variável sexo para os valores 0 se masculino e 1 se feminino. Construindo os gráficos de dispersão correlacionando as variáveis explicativas com a variável resposta:
+
+```{r}
+esforco <- read_excel("data/esforco_6_18.xlsx", na=".")
+esforco <- drop_na(esforco)
+esforco$sexo <- as.integer(esforco$sexo == "F")
+esforco %>% gather(-consumo_oxigenio_pico, key="key", value="value") %>% ggplot(aes(x=value, y=consumo_oxigenio_pico)) + geom_point() + facet_wrap(~key, scales = "free") + labs(title="Gráficos correlacionando variáveis explicativas com a variável resposta")
+```
+
+Adotaremos o modelo de regressão linear:
+$y_i$ = a + b * sexo + c * idade + d * peso + e * classificacao_nyha + i * carga_esteira + f * frequencia_cardiaca + g * razao_troca_respiratoria + $e_i$
+Onde $a$ é o intercepto, $[c, d, e, i, f, g]$ são coeficientes, $e_i$ são erros aleatórios não correlacionados, e as outras variáveis são explicadas pelo dicionário acima.
+
+Ajustando o modelo e apresentando erros padrões, gráficos e outras informações:
+
+```{r, fig.height=4}
+
+fit_titles <- list("Resíduos vs observações x para o ajuste feito no modelo",
+                    "Gráfico Q-Q normal para o ajuste feito no modelo",
+                    "Resíduos normalizados vs observações x para o ajuste feito no modelo",
+                    "Resíduos normalizados vs influência das observações para o ajuste feito no modelo")
+
+mostrarAjuste <- function(dados, ajuste) {
+
+  print(summary(ajuste))
+  plot(ajuste, 
+       caption=fit_titles)
+  
+  #confidence_intervals <- confint(ajuste)
+  #k <- kable(confidence_intervals, caption="Intervalos de confiança para o ajuste dos parâmetros do modelo")
+  #print(k)
+  
+  return(ajuste)
+}
+```
+```{r, fig.height=4}
+ajuste <- lm(consumo_oxigenio_pico ~ sexo + idade + peso + classificacao_nyha + carga_esteira + frequencia_cardiaca + razao_troca_respiratoria, data=esforco)
+mostrarAjuste(esforco, ajuste)
+```
+O valor de R^2 e o gráfico de resíduos indicam o esperado: que apesar de algumas variáveis se correlacionarem de forma linear visualmente, elas estão organizadas em uma faixa larga, ou seja, a correlação não é precisa. O gráfico QQ normal desvia não se aproxima muito da reta diagonal na ponta direita, o que indica que podemos obter um ajuste melhor.
+
+Queremos utilizar somente os parâmetros mais relevantes no modelo. Utilizaremos somente os parâmetros intercept, sexo, peso e carga_esteira, que possuem os menores valores de Pr(>|t|). Ajustando o modelo:
+
+```{r, fig.height=4}
+ajuste2 <- lm(consumo_oxigenio_pico ~ sexo + peso + carga_esteira, data=esforco)
+mostrarAjuste(esforco, ajuste2)
+```
+
+Após o novo ajuste com somente as variáveis mais significativas, pode-se observar que o resíduo na verdade aumentou ligeiramente. Entretanto, o valor R^2 diminuiu e os pontos no gráfico Q-Q Normal estão mais próximos da linha diagonal, indicando melhor qualidade do ajuste.
+
+O parâmetro sexo não é mais tão significativo no modelo. Ajustando o modelo sem esse parâmetro:
+
+```{r, fig.height=4}
+ajuste3 <- lm(consumo_oxigenio_pico ~ peso + carga_esteira, data=esforco)
+mostrarAjuste(esforco, ajuste3)
+```
+
+A remoção da variável 'sexo' não causou mudança significativa em relação ao ajuste anterior.
 
 
 
