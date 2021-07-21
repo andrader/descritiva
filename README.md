@@ -49,8 +49,8 @@ Exercícios de [Morettin e Singer (versão junho 2021)](https://www.ime.usp.br/~
 
 Capítulo 6
 
-- [ ] 5 -
-- [ ] 8 -
+- [x] 5 - Rubens G
+- [x] 8 -
 - [ ] 18 -
 - [x] 19 - Rubens G
 - [ ] 21 -
