@@ -60,6 +60,7 @@ library(ggplot2)
 library(rstatix)
 library(ggpubr)
 library(car)
+library(glmnet)
 library(corrgram)
 source('src/helpers.R')
 ```
@@ -68,3 +69,60 @@ source('src/helpers.R')
 
 ## Exercício 6 
 
+Considere o conjunto de dados `antracose`, selecionando aleatoriamente 70\% das observações para treinamento e as restantes para validação.
+
+```{r, echo=TRUE}
+antracose0 <- read_xls('data/antracose.xls')
+antracose1 <- na.omit(antracose0)
+```
+
+a) Ajuste modelos de regressão linear múltipla e de regularização Ridge, Lasso e Elastic Net ao conjunto de treinamento com o objetivo de previsão da variável `antracose` com base nas variáveis preditoras `idade, tmunic, htransp, cargatabag, ses, densid e distmin`.
+
+```{r, echo=TRUE}
+# Separação dos dados em 70% treinamento e 30% validação
+set.seed(12)
+dados <- data.matrix(antracose1)
+train_indexes <- sample(seq_len(nrow(dados)), floor(0.7*nrow(dados)))
+
+y_train <- dados[train_indexes,c(5)]
+x_train <- dados[train_indexes,-c(5)]
+y_val <- dados[-train_indexes,c(5)]
+x_val <- dados[-train_indexes,-c(5)]
+
+```
+
+Regressão linear múltipla:
+
+```{r, echo=TRUE, fig.height=4, fig.width=6, fig.align='center'}
+antracose_lm <- lm(y_train~x_train)
+```
+
+Regularização Ridge:
+
+```{r, echo=TRUE, fig.height=4, fig.width=6, fig.align='center'}
+antracose_ridgecv = cv.glmnet(x_train, y_train, alpha = 0)
+plot(antracose_ridgecv)
+```
+
+Regularização Lasso:
+
+```{r, echo=TRUE, fig.height=4, fig.width=6, fig.align='center'}
+antracose_lassocv = cv.glmnet(x_train, y_train, alpha = 1)
+plot(antracose_lassocv)
+
+```
+
+Regularização Elastic Net
+
+```{r, echo=TRUE, fig.height=4, fig.width=6, fig.align='center'}
+antracose_elncv = cv.glmnet(x_train, y_train, alpha = 0.5)
+plot(antracose_elncv)
+```
+
+b) Compare o desempenho dos modelos no conjunto de validação.
+
+c) Repita os itens a) e b) com outra seleção aleatória dos conjuntos de treinamento e de validação.
+
+d) Construa uma tabela com as medidas de desempenho de todos os modelos ajustados e comente os resultados.
+
+e) Utilize modelos GAM para avaliar se as variáveis preditoras estão linearmente associadas com a variável resposta e compare o resultado do modelo adotado sob esse enfoque com aqueles dos demais modelos.
