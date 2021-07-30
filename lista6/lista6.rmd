@@ -65,9 +65,9 @@ library(corrgram)
 source('src/helpers.R')
 ```
 
-# Capítulo 8 
+# Capítulo 8
 
-## Exercício 6 
+## Exercício 6
 
 Considere o conjunto de dados `antracose`, selecionando aleatoriamente 70\% das observações para treinamento e as restantes para validação.
 
@@ -76,7 +76,7 @@ antracose0 <- read_xls('data/antracose.xls')
 antracose1 <- na.omit(antracose0)
 ```
 
-a) Ajuste modelos de regressão linear múltipla e de regularização Ridge, Lasso e Elastic Net ao conjunto de treinamento com o objetivo de previsão da variável `antracose` com base nas variáveis preditoras `idade, tmunic, htransp, cargatabag, ses, densid e distmin`.
+### a) Ajuste modelos de regressão linear múltipla e de regularização Ridge, Lasso e Elastic Net ao conjunto de treinamento com o objetivo de previsão da variável `antracose` com base nas variáveis preditoras `idade, tmunic, htransp, cargatabag, ses, densid e distmin`.
 
 ```{r, echo=TRUE}
 # Separação dos dados em 70% treinamento e 30% validação
@@ -88,7 +88,6 @@ y_train <- dados[train_indexes,c(5)]
 x_train <- dados[train_indexes,-c(5)]
 y_val <- dados[-train_indexes,c(5)]
 x_val <- dados[-train_indexes,-c(5)]
-
 ```
 
 Regressão linear múltipla:
@@ -109,7 +108,6 @@ Regularização Lasso:
 ```{r, echo=TRUE, fig.height=4, fig.width=6, fig.align='center'}
 antracose_lassocv = cv.glmnet(x_train, y_train, alpha = 1)
 plot(antracose_lassocv)
-
 ```
 
 Regularização Elastic Net
@@ -119,10 +117,50 @@ antracose_elncv = cv.glmnet(x_train, y_train, alpha = 0.5)
 plot(antracose_elncv)
 ```
 
-b) Compare o desempenho dos modelos no conjunto de validação.
+### b) Compare o desempenho dos modelos no conjunto de validação.
 
-c) Repita os itens a) e b) com outra seleção aleatória dos conjuntos de treinamento e de validação.
+### c) Repita os itens a) e b) com outra seleção aleatória dos conjuntos de treinamento e de validação.
 
-d) Construa uma tabela com as medidas de desempenho de todos os modelos ajustados e comente os resultados.
+```{r, echo=TRUE}
+# Separação dos dados em 70% treinamento e 30% validação
+set.seed(13)
+dados2 <- data.matrix(antracose1)
+train_indexes2 <- sample(seq_len(nrow(dados2)), floor(0.7*nrow(dados2)))
 
-e) Utilize modelos GAM para avaliar se as variáveis preditoras estão linearmente associadas com a variável resposta e compare o resultado do modelo adotado sob esse enfoque com aqueles dos demais modelos.
+y_train2 <- dados2[train_indexes2,c(5)]
+x_train2 <- dados2[train_indexes2,-c(5)]
+y_val2 <- dados2[-train_indexes2,c(5)]
+x_val2 <- dados2[-train_indexes2,-c(5)]
+```
+
+Regressão linear múltipla:
+
+```{r, echo=TRUE, fig.height=4, fig.width=6, fig.align='center'}
+antracose_lm2 <- lm(y_train2~x_train2)
+```
+
+Regularização Ridge:
+
+```{r, echo=TRUE, fig.height=4, fig.width=6, fig.align='center'}
+antracose_ridgecv2 = cv.glmnet(x_train2, y_train2, alpha = 0)
+plot(antracose_ridgecv2)
+```
+
+Regularização Lasso:
+
+```{r, echo=TRUE, fig.height=4, fig.width=6, fig.align='center'}
+antracose_lassocv2 = cv.glmnet(x_train2, y_train2, alpha = 1)
+plot(antracose_lassocv2)
+
+```
+
+Regularização Elastic Net
+
+```{r, echo=TRUE, fig.height=4, fig.width=6, fig.align='center'}
+antracose_elncv2 = cv.glmnet(x_train2, y_train2, alpha = 0.5)
+plot(antracose_elncv2)
+```
+
+### d) Construa uma tabela com as medidas de desempenho de todos os modelos ajustados e comente os resultados.
+
+### e) Utilize modelos GAM para avaliar se as variáveis preditoras estão linearmente associadas com a variável resposta e compare o resultado do modelo adotado sob esse enfoque com aqueles dos demais modelos.
