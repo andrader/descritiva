@@ -1,0 +1,166 @@
+---
+title: "MAE0217 - Estatística Descritiva - Lista 6"
+author: |
+  | Natalia Hitomi Koza\thanks{Número USP: 10698432}
+  | Rafael Gonçalves Pereira da Silva\thanks{Número USP: 9009600}
+  | Ricardo Geraldes Tolesano\thanks{Número USP: 10734557}
+  | Rubens Kushimizo Rodrigues Xavier\thanks{Número USP: 8626718}
+  | Rubens Gomes Neto\thanks{Número USP: 9318484}
+  | Rubens Santos Andrade Filho\thanks{Número USP: 10370336}
+  | Thamires dos Santos Matos\thanks{Número USP: 9402940}
+date: "`r stringr::str_to_sentence(format(Sys.time(), '%B de %Y'))`"
+lang: pt-BR
+header-includes:
+  # - \usepackage[brazilian]{babel}
+  - \usepackage{float}
+  - \usepackage{amsmath}
+  - \usepackage{amsthm}
+  - \floatplacement{figure}{H}
+  - \usepackage{indentfirst}
+  - \setlength{\parindent}{4em}
+  - \setlength{\parskip}{1em}
+  - \usepackage{booktabs}
+  - \usepackage{dcolumn}
+  - \usepackage{bm}
+  - \usepackage{titling}
+  - \thanksmarkseries{arabic} % \thanks footnotes com numeros
+  - \usepackage[bottom]{footmisc} % corrige posição footnotes
+  - \usepackage{pdfpages}
+  - \usepackage{tocloft}
+  - \renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+  - \usepackage{amssymb}
+  - \renewcommand\qedsymbol{$\blacksquare$}
+  - \usepackage{pdfpages}
+  - \usepackage{cleveref}
+  - \usepackage{threeparttable}
+output:
+  # pdf_document:
+  bookdown::pdf_document2:
+    fig_caption: yes
+    number_sections: no
+    toc: true
+    toc_depth: 2
+editor_options:
+  chunk_output_type: console
+---
+
+\pagebreak
+
+```{r setup, include=FALSE}
+options(width = 60)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+library(tidyverse)
+library(knitr)
+library(readxl)
+library(dplyr)
+library(patchwork)
+library(pander)
+library(ggplot2)
+# library(ggplot)
+library(rstatix)
+library(ggpubr)
+library(car)
+library(glmnet)
+library(corrgram)
+source('src/helpers.R')
+```
+
+# Capítulo 8
+
+## Exercício 6
+
+Considere o conjunto de dados `antracose`, selecionando aleatoriamente 70\% das observações para treinamento e as restantes para validação.
+
+```{r, echo=TRUE}
+antracose0 <- read_xls('data/antracose.xls')
+antracose1 <- na.omit(antracose0)
+```
+
+### a) Ajuste modelos de regressão linear múltipla e de regularização Ridge, Lasso e Elastic Net ao conjunto de treinamento com o objetivo de previsão da variável `antracose` com base nas variáveis preditoras `idade, tmunic, htransp, cargatabag, ses, densid e distmin`.
+
+```{r, echo=TRUE}
+# Separação dos dados em 70% treinamento e 30% validação
+set.seed(12)
+dados <- data.matrix(antracose1)
+train_indexes <- sample(seq_len(nrow(dados)), floor(0.7*nrow(dados)))
+
+y_train <- dados[train_indexes,c(5)]
+x_train <- dados[train_indexes,-c(5)]
+y_val <- dados[-train_indexes,c(5)]
+x_val <- dados[-train_indexes,-c(5)]
+```
+
+Regressão linear múltipla:
+
+```{r, echo=TRUE, fig.height=4, fig.width=6, fig.align='center'}
+antracose_lm <- lm(y_train~x_train)
+```
+
+Regularização Ridge:
+
+```{r, echo=TRUE, fig.height=4, fig.width=6, fig.align='center'}
+antracose_ridgecv = cv.glmnet(x_train, y_train, alpha = 0)
+plot(antracose_ridgecv)
+```
+
+Regularização Lasso:
+
+```{r, echo=TRUE, fig.height=4, fig.width=6, fig.align='center'}
+antracose_lassocv = cv.glmnet(x_train, y_train, alpha = 1)
+plot(antracose_lassocv)
+```
+
+Regularização Elastic Net
+
+```{r, echo=TRUE, fig.height=4, fig.width=6, fig.align='center'}
+antracose_elncv = cv.glmnet(x_train, y_train, alpha = 0.5)
+plot(antracose_elncv)
+```
+
+### b) Compare o desempenho dos modelos no conjunto de validação.
+
+### c) Repita os itens a) e b) com outra seleção aleatória dos conjuntos de treinamento e de validação.
+
+```{r, echo=TRUE}
+# Separação dos dados em 70% treinamento e 30% validação
+set.seed(13)
+dados2 <- data.matrix(antracose1)
+train_indexes2 <- sample(seq_len(nrow(dados2)), floor(0.7*nrow(dados2)))
+
+y_train2 <- dados2[train_indexes2,c(5)]
+x_train2 <- dados2[train_indexes2,-c(5)]
+y_val2 <- dados2[-train_indexes2,c(5)]
+x_val2 <- dados2[-train_indexes2,-c(5)]
+```
+
+Regressão linear múltipla:
+
+```{r, echo=TRUE, fig.height=4, fig.width=6, fig.align='center'}
+antracose_lm2 <- lm(y_train2~x_train2)
+```
+
+Regularização Ridge:
+
+```{r, echo=TRUE, fig.height=4, fig.width=6, fig.align='center'}
+antracose_ridgecv2 = cv.glmnet(x_train2, y_train2, alpha = 0)
+plot(antracose_ridgecv2)
+```
+
+Regularização Lasso:
+
+```{r, echo=TRUE, fig.height=4, fig.width=6, fig.align='center'}
+antracose_lassocv2 = cv.glmnet(x_train2, y_train2, alpha = 1)
+plot(antracose_lassocv2)
+
+```
+
+Regularização Elastic Net
+
+```{r, echo=TRUE, fig.height=4, fig.width=6, fig.align='center'}
+antracose_elncv2 = cv.glmnet(x_train2, y_train2, alpha = 0.5)
+plot(antracose_elncv2)
+```
+
+### d) Construa uma tabela com as medidas de desempenho de todos os modelos ajustados e comente os resultados.
+
+### e) Utilize modelos GAM para avaliar se as variáveis preditoras estão linearmente associadas com a variável resposta e compare o resultado do modelo adotado sob esse enfoque com aqueles dos demais modelos.
